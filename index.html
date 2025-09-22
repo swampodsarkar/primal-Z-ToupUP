@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primal Z - Ultimate Game Topup Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .modal {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast.success {
+            background-color: #10b981;
+        }
+        .toast.error {
+            background-color: #ef4444;
+        }
+        .toast.info {
+            background-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="bg-white shadow-md sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="#" class="text-3xl font-bold text-gray-800">Primal Z</a>
+        <div class="flex items-center space-x-4">
+            <div id="auth-buttons">
+                <button onclick="openModal('loginModal')" class="hidden md:inline-block text-gray-600 font-semibold hover:text-indigo-600 transition">Login</button>
+                <button onclick="openModal('signupModal')" class="bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-700 transition">Signup</button>
+            </div>
+            <div id="user-info" class="hidden items-center space-x-4">
+                <span id="user-name" class="font-semibold text-gray-700"></span>
+                <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="text-gray-600 font-semibold hover:text-indigo-600 transition">My Orders</button>
+                <button onclick="auth.signOut()" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition">Logout</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-4 mt-8">
+    <div id="banner" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 md:p-12 rounded-2xl text-center mb-6">
+        <h2 class="text-4xl font-bold">Welcome to Primal Z</h2>
+        <p class="mt-4 text-lg">Get your game credits instantly with the fastest delivery system</p>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+            <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                <i class="fas fa-bolt text-indigo-600 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg">Instant Delivery</h3>
+                <p class="text-gray-600">Get your credits within minutes</p>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+            <div class="bg-green-100 p-3 rounded-full mr-4">
+                <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg">Secure Payment</h3>
+                <p class="text-gray-600">100% safe and secure transactions</p>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                <i class="fas fa-headset text-purple-600 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg">24/7 Support</h3>
+                <p class="text-gray-600">Round the clock customer service</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notice" class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold">
+        Loading Notice...
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 mb-8">
+        <input type="text" id="searchInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition" placeholder="Search for offers..." oninput="renderOffers()">
+        <select id="categoryFilter" class="w-full md:w-1/3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition" onchange="renderOffers()">
+            <option value="">All Categories</option>
+        </select>
+    </div>
+
+    <div id="offersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Skeleton loading cards -->
+        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+    </div>
+</div>
+
+<a href="https://t.me/YourSupportBot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:scale-105 transition-transform">
+    Live Support
+</a>
+
+<footer class="bg-white mt-12 py-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold text-gray-800">GET SOCIAL SERVICE </h3>
+                <p class="text-gray-600 mt-2">VISIT YOUR FACEBOOK PAGE</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="https://fastsmm-panel.vercel.app/" target="_blank" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
+        </div>
+        <div class="border-t border-gray-200 mt-6 pt-6 text-center text-gray-500">
+            &copy; 2025 Primal Z. All Rights Reserved.
+        </div>
+    </div>
+</footer>
+
+<!-- Modals -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+        <span onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
+        <h2 class="text-2xl font-bold mb-6">Login to Your Account</h2>
+        <input type="email" id="loginEmail" placeholder="Email" class="w-full p-3 mb-4 border rounded-lg">
+        <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 mb-4 border rounded-lg">
+        <button onclick="login()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Login</button>
+    </div>
+</div>
+
+<div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+        <span onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
+        <h2 class="text-2xl font-bold mb-6">Create a New Account</h2>
+        <input type="text" id="signupUsername" placeholder="Username" class="w-full p-3 mb-4 border rounded-lg">
+        <input type="email" id="signupEmail" placeholder="Email" class="w-full p-3 mb-4 border rounded-lg">
+        <input type="password" id="signupPassword" placeholder="Password" class="w-full p-3 mb-4 border rounded-lg">
+        <button onclick="signup()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Create Account</button>
+    </div>
+</div>
+
+<div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+        <span onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
+        <h2 class="text-2xl font-bold mb-4">Place Order</h2>
+        <p id="orderOfferTitle" class="text-xl font-semibold text-gray-800"></p>
+        <p class="my-2">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
+        <input type="text" id="orderGameId" placeholder="Your Game UID/ID" class="w-full p-3 my-4 border rounded-lg">
+        <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="w-full p-3 mb-4 border rounded-lg">
+            <option value="Bkash">Bkash</option>
+            <option value="Nagad">Nagad</option>
+        </select>
+        <p class="mb-4">Send Payment to: <strong id="paymentNumber" class="text-red-500">01767882562</strong></p>
+        <label class="block mb-2 font-semibold">Payment Screenshot:</label>
+        <input type="file" id="paymentProof" class="w-full border rounded-lg p-2">
+        <button onclick="placeOrder()" class="w-full mt-6 bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Submit Order</button>
+    </div>
+</div>
+
+<div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative">
+        <span onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
+        <h2 class="text-2xl font-bold mb-6">My Orders</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-100">
+                    <tr><th class="p-3">Offer</th><th class="p-3">Price</th><th class="p-3">Game UID</th><th class="p-3">Status</th></tr>
+                </thead>
+                <tbody id="myOrdersBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = { 
+        apiKey: "AIzaSyDtq1vLVZ9D3CBis6FFSpt8psERGyTG6YM", 
+        authDomain: "gen-z-airdrop.firebaseapp.com", 
+        databaseURL: "https://gen-z-airdrop-default-rtdb.asia-southeast1.firebasedatabase.app", 
+        projectId: "gen-z-airdrop", 
+        storageBucket: "gen-z-airdrop.firebasestorage.app", 
+        messagingSenderId: "1056087088959", 
+        appId: "1:1056087088959:web:2d15418429c2f378f2bd8a", 
+        measurementId: "G-CKB3HP9D31" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let offersData = {};
+    let selectedOfferKey = null;
+
+    // --- Modal Functions ---
+    function openModal(modalId) { 
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.add('active'), 10);
+    }
+    
+    function closeModal(modalId) { 
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('active');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    // --- Toast Notification ---
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // --- Auth State Change ---
+    auth.onAuthStateChanged(user => {
+        const authButtons = document.getElementById('auth-buttons');
+        const userInfo = document.getElementById('user-info');
+        if (user) {
+            authButtons.classList.add('hidden');
+            userInfo.classList.remove('hidden');
+            userInfo.classList.add('flex');
+            document.getElementById('user-name').innerText = user.displayName || user.email;
+            showToast(`Welcome back, ${user.displayName || user.email}!`, 'success');
+        } else {
+            authButtons.classList.remove('hidden');
+            userInfo.classList.add('hidden');
+            userInfo.classList.remove('flex');
+        }
+    });
+
+    // --- Auth Functions ---
+    function login() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        
+        if (!email || !pass) {
+            showToast('Please fill in all fields', 'error');
+            return;
+        }
+        
+        auth.signInWithEmailAndPassword(email, pass)
+            .then(() => {
+                closeModal('loginModal');
+                showToast('Login successful!', 'success');
+            })
+            .catch(e => {
+                showToast(`Login failed: ${e.message}`, 'error');
+            });
+    }
+    
+    function signup() {
+        const username = document.getElementById('signupUsername').value;
+        const email = document.getElementById('signupEmail').value;
+        const pass = document.getElementById('signupPassword').value;
+        
+        if (!username.trim() || !email || !pass) {
+            showToast('Please fill in all fields', 'error');
+            return;
+        }
+        
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then(cred => {
+                cred.user.updateProfile({ displayName: username });
+                // Save user data to Realtime Database
+                db.ref('users/' + cred.user.uid).set({ username, email, banned: false });
+                closeModal('signupModal');
+                showToast('Account created successfully!', 'success');
+            })
+            .catch(e => {
+                showToast(`Signup failed: ${e.message}`, 'error');
+            });
+    }
+
+    // --- Load and Render Offers ---
+    function loadOffers() {
+        db.ref('offers').on('value', snap => {
+            offersData = snap.val() || {};
+            renderOffers();
+            populateCategoryFilter();
+        });
+    }
+
+    function renderOffers() {
+        const grid = document.getElementById('offersGrid');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const category = document.getElementById('categoryFilter').value;
+        
+        // Clear loading skeletons
+        grid.innerHTML = '';
+        
+        // If no offers available
+        if (Object.keys(offersData).length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-gamepad text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600">No offers available at the moment</h3>
+                    <p class="text-gray-500">Please check back later for new offers</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let hasResults = false;
+        
+        Object.keys(offersData).forEach(key => {
+            const o = offersData[key];
+            if ((search && !o.title.toLowerCase().includes(search)) || (category && o.category !== category)) return;
+            
+            hasResults = true;
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 flex flex-col';
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${o.image}" alt="${o.title}" class="w-full h-48 object-cover">
+                    ${o.discount ? `<span class="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-bold">${o.discount}% OFF</span>` : ''}
+                </div>
+                <div class="p-5 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-gray-800">${o.title}</h3>
+                    <p class="text-gray-500 text-sm mt-2 flex-grow">${o.description}</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div>
+                            ${o.originalPrice ? `<span class="text-sm text-gray-500 line-through">${o.originalPrice} TK</span>` : ''}
+                            <span class="text-2xl font-bold text-indigo-600">${o.price} TK</span>
+                        </div>
+                        <button onclick="showOrderModal('${key}')" class="bg-indigo-100 text-indigo-600 font-semibold py-2 px-4 rounded-lg hover:bg-indigo-200 transition">Order</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        
+        if (!hasResults) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600">No matching offers found</h3>
+                    <p class="text-gray-500">Try adjusting your search or filter criteria</p>
+                </div>
+            `;
+        }
+    }
+
+    function populateCategoryFilter() {
+        const select = document.getElementById('categoryFilter');
+        const categories = [...new Set(Object.values(offersData).map(o => o.category).filter(Boolean))];
+        select.innerHTML = '<option value="">All Categories</option>';
+        categories.forEach(c => select.innerHTML += `<option value="${c}">${c}</option>`);
+    }
+
+    // --- Order Functions ---
+    function showOrderModal(key) {
+        if (!auth.currentUser) {
+            showToast('Please login to place an order', 'error');
+            openModal('loginModal');
+            return;
+        }
+        selectedOfferKey = key;
+        const offer = offersData[key];
+        document.getElementById('orderOfferTitle').innerText = offer.title;
+        document.getElementById('orderPrice').innerText = `${offer.price} TK`;
+        openModal('orderModal');
+    }
+
+    async function placeOrder() {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        const offer = offersData[selectedOfferKey];
+        const gameId = document.getElementById('orderGameId').value;
+        
+        if (!gameId) {
+            showToast('Please enter your Game UID', 'error');
+            return;
+        }
+        
+        let proofUrl = '';
+        const proofFile = document.getElementById('paymentProof').files[0];
+        
+        if (proofFile) {
+            const formData = new FormData();
+            formData.append('image', proofFile);
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=213fd215f712156cc6a6ab529469da2f`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) proofUrl = data.data.url;
+                else throw new Error(data.error.message);
+            } catch (error) {
+                showToast('Image upload failed: ' + error.message, 'error');
+                return;
+            }
+        }
+        
+        const order = { 
+            uid: user.uid, 
+            username: user.displayName, 
+            offerId: offer.title, 
+            price: offer.price, 
+            gameId, 
+            paymentMethod: document.getElementById('orderPaymentMethod').value, 
+            proofUrl, 
+            status: 'pending', 
+            timestamp: Date.now() 
+        };
+        
+        await db.ref('orders').push(order);
+        showToast('Order placed successfully!', 'success');
+        closeModal('orderModal');
+        document.getElementById('orderGameId').value = '';
+        document.getElementById('paymentProof').value = '';
+    }
+
+    function loadMyOrders() {
+        const uid = auth.currentUser.uid;
+        db.ref('orders').orderByChild('uid').equalTo(uid).on('value', snap => {
+            const tbody = document.getElementById('myOrdersBody');
+            tbody.innerHTML = '';
+            const orders = snap.val() || {};
+            
+            if (Object.keys(orders).length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center p-6 text-gray-500">
+                            <i class="fas fa-shopping-cart text-4xl mb-2"></i>
+                            <p>You haven't placed any orders yet</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            Object.values(orders).reverse().forEach(o => {
+                const statusClasses = {
+                    pending: 'bg-yellow-100 text-yellow-800',
+                    completed: 'bg-green-100 text-green-800',
+                    cancelled: 'bg-red-100 text-red-800'
+                };
+                const statusClass = statusClasses[o.status] || 'bg-gray-100 text-gray-800';
+                tbody.innerHTML += `<tr class="border-b hover:bg-gray-50"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} TK</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-sm font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
+            });
+        });
+    }
+
+    function updatePaymentNumber() {
+        document.getElementById('paymentNumber').innerText = document.getElementById('orderPaymentMethod').value === 'Bkash' ? '01767882562' : '01767882562';
+    }
+
+    // --- Initial Load ---
+    db.ref('meta').on('value', snap => {
+        const meta = snap.val() || {};
+        document.querySelector('#banner h2').innerText = meta.banner || 'Get Your Game Credits Instantly';
+        document.getElementById('notice').innerText = meta.notice || 'Special offers are running now! Grab yours today.';
+    });
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+        loadOffers();
+    }, 1000);
+</script>
+
+</body>
+</html>
+</html>
