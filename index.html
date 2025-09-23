@@ -198,6 +198,8 @@
         </div>
     </div>
 </footer>
+
+
 <div id="modals-container">
     <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
@@ -221,32 +223,51 @@
     </div>
 
     <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg relative">
-            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-4">Place Your Order</h2>
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
-                <p id="orderOfferTitle" class="text-xl font-semibold text-slate-800"></p>
-                <p class="mt-1">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
-            </div>
-            <div class="space-y-4">
-                <input type="text" id="orderGameId" placeholder="Your Game UID / ID" class="form-input">
-                <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="form-input">
-                    <option value="Bkash">Bkash</option>
-                    <option value="Nagad">Nagad</option>
-                </select>
-                <div class="bg-red-50 text-center p-3 rounded-lg border border-red-200">
-                    <p class="text-sm text-red-700">Send Payment to:</p>
-                    <strong id="paymentNumber" class="text-red-600 text-lg tracking-wider">01767882562</strong>
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
+            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-3xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-4 border-b border-slate-200">
+                <h2 class="text-2xl font-bold mb-2 sm:mb-0">Place Your Order</h2>
+                <div class="text-left sm:text-right">
+                    <p id="orderOfferTitle" class="text-lg font-semibold text-slate-800"></p>
+                    <p class="mt-1">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
                 </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="orderGameId" class="block mb-2 font-semibold text-slate-700">Your Game UID / ID</label>
+                        <input type="text" id="orderGameId" placeholder="e.g., 123456789" class="form-input">
+                    </div>
+                    <div>
+                        <label for="orderPaymentMethod" class="block mb-2 font-semibold text-slate-700">Payment Method</label>
+                        <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="form-input">
+                            <option value="Bkash">Bkash</option>
+                            <option value="Nagad">Nagad</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div>
-                    <label class="block mb-2 font-semibold text-slate-700">Payment Screenshot:</label>
-                    <input type="file" id="paymentProof" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <p class="block mb-2 font-semibold text-slate-700">Payment Instructions</p>
+                    <div class="bg-slate-100 p-4 rounded-lg border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-600">Send total amount to this number:</p>
+                            <strong id="paymentNumber" class="text-indigo-600 text-xl tracking-wider">01767882562</strong>
+                        </div>
+                        <i class="fas fa-copy text-slate-400 text-lg"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="paymentProof" class="block mb-2 font-semibold text-slate-700">Payment Screenshot</label>
+                    <input type="file" id="paymentProof" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors cursor-pointer">
                 </div>
             </div>
-            <button onclick="placeOrder()" class="w-full mt-6 bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Submit Order</button>
+            
+            <button onclick="placeOrder()" class="w-full mt-8 bg-indigo-600 text-white p-4 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300 text-lg">Submit Order</button>
         </div>
     </div>
-
     <div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
             <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
@@ -385,7 +406,6 @@
             
             hasResults = true;
             const card = document.createElement('div');
-            // UPDATED SMALLER CARD HTML
             card.className = 'bg-white rounded-2xl shadow-md hover:shadow-xl border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col group';
             card.innerHTML = `
                 <div class="relative overflow-hidden">
