@@ -10,11 +10,12 @@
     <style>
         body {
             font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
-            background-color: #1a202c; /* Dark slate background */
-            color: #e2e8f0; /* Lighter text color */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
         }
         .skeleton {
-            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+            background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
         }
@@ -52,23 +53,64 @@
         .toast.error { background-color: #ef4444; }
         .toast.info { background-color: #3b82f6; }
         .form-input {
-             @apply w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200;
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #4b5563;
+            border-radius: 0.5rem;
+            background-color: #374151;
+            color: white;
+            transition: all 0.2s;
         }
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        .offer-card {
+            transition: all 0.3s ease;
+            border: 1px solid #374151;
+        }
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: #10b981;
+        }
+        .category-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            border-color: #10b981;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+        .status-pending { background-color: #f59e0b; color: white; }
+        .status-completed { background-color: #10b981; color: white; }
+        .status-cancelled { background-color: #ef4444; color: white; }
     </style>
 </head>
 <body class="text-slate-200">
 
-<nav class="bg-gray-900/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+<nav class="bg-gray-900/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-800">
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
             <a href="#" class="flex items-center space-x-2 text-3xl font-extrabold text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
-                <span>Primal Z</span>
+                <span class="gradient-text">Primal Z</span>
             </a>
             <div class="flex items-center space-x-4">
                 <div id="auth-buttons" class="flex items-center space-x-2">
                     <button onclick="openModal('loginModal')" class="hidden md:inline-block font-semibold text-gray-300 hover:text-green-500 transition-colors px-4 py-2">Login</button>
-                    <button onclick="openModal('signupModal')" class="bg-green-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
+                    <button onclick="openModal('signupModal')" class="gradient-bg text-white font-semibold py-2 px-5 rounded-lg hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
                 </div>
                 <div id="user-info" class="hidden items-center space-x-4">
                     <span class="font-semibold text-gray-300 hidden md:block">Welcome, <span id="user-name"></span></span>
@@ -81,13 +123,13 @@
 </nav>
 
 <main>
-    <div id="banner" class="relative text-white pt-24 pb-32 text-center">
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop');"></div>
-        <div class="absolute inset-0 bg-black/70 bg-gradient-to-t from-black/80 to-transparent"></div>
+    <div id="banner" class="relative text-white pt-24 pb-32 text-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-900/20 to-blue-900/20"></div>
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat opacity-20"></div>
         <div class="container mx-auto px-4 relative">
-            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">Welcome to Primal Z</h1>
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">Welcome to <span class="gradient-text">Primal Z</span></h1>
             <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-300">Get your game credits instantly with the fastest & most reliable delivery system.</p>
-            <a href="#offers" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 hover:scale-105 transition-all duration-300">
+            <a href="#offers" class="mt-8 inline-block gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:opacity-90 hover:scale-105 transition-all duration-300">
                 Browse Offers <i class="fas fa-arrow-down ml-2"></i>
             </a>
         </div>
@@ -95,7 +137,7 @@
     
     <div class="container mx-auto px-4 -mt-16 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="category-card p-6 rounded-xl shadow-lg flex items-center space-x-4">
                 <div class="bg-green-700/30 p-4 rounded-full">
                     <i class="fas fa-bolt text-green-400 text-2xl"></i>
                 </div>
@@ -104,7 +146,7 @@
                     <p class="text-gray-400">Your credits delivered in minutes.</p>
                 </div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="category-card p-6 rounded-xl shadow-lg flex items-center space-x-4">
                 <div class="bg-cyan-700/30 p-4 rounded-full">
                     <i class="fas fa-shield-alt text-cyan-400 text-2xl"></i>
                 </div>
@@ -113,7 +155,7 @@
                     <p class="text-gray-400">100% safe & secure transactions.</p>
                 </div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="category-card p-6 rounded-xl shadow-lg flex items-center space-x-4">
                 <div class="bg-purple-700/30 p-4 rounded-full">
                     <i class="fas fa-headset text-purple-400 text-2xl"></i>
                 </div>
@@ -124,35 +166,35 @@
             </div>
         </div>
     
-        <div id="notice" class="bg-gradient-to-r from-green-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
+        <div id="notice" class="gradient-bg text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
             <i class="fas fa-bell animate-pulse"></i>
             <span>Loading Notice...</span>
         </div>
 
         <div id="offers" class="mb-8">
-            <div class="bg-gray-800 p-4 rounded-xl shadow-md border border-gray-700 mb-6">
-                <h3 class="text-xl font-bold mb-4">Choose a Category</h3>
+            <div class="category-card p-6 rounded-xl shadow-md mb-6">
+                <h3 class="text-xl font-bold mb-4 text-white">Choose a Category</h3>
                 <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
+                    <div class="skeleton rounded-xl h-24"></div>
+                    <div class="skeleton rounded-xl h-24"></div>
+                    <div class="skeleton rounded-xl h-24"></div>
+                    <div class="skeleton rounded-xl h-24"></div>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
-<a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-cyan-500 text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
+<a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 gradient-bg text-white font-bold py-3 px-5 rounded-full shadow-xl hover:opacity-90 hover:scale-110 transition-transform duration-300 flex items-center space-x-2 z-30">
     <i class="fas fa-headset"></i>
     <span class="hidden sm:inline">Live Support</span>
 </a>
 
-<footer class="bg-gray-900 text-gray-400 mt-20">
+<footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800">
     <div class="container mx-auto px-4 pt-16 pb-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div class="md:col-span-1">
-                <h3 class="text-2xl font-bold text-white mb-4">Primal Z</h3>
+                <h3 class="text-2xl font-bold text-white mb-4 gradient-text">Primal Z</h3>
                 <p>Your one-stop solution for instant game top-ups. We provide fast, secure, and reliable service for gamers everywhere.</p>
             </div>
             <div>
@@ -195,43 +237,43 @@
     </div>
 </footer>
 
-
 <div id="modals-container">
     <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+        <div class="category-card p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
             <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">Login to Your Account</h2>
             <input type="email" id="loginEmail" placeholder="Email Address" class="form-input mb-4">
             <input type="password" id="loginPassword" placeholder="Password" class="form-input mb-6">
-            <button onclick="login()" class="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300">Login</button>
+            <button onclick="login()" class="w-full gradient-bg text-white p-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-300">Login</button>
         </div>
     </div>
 
     <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+        <div class="category-card p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
             <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-center">Create a New Account</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">Create a New Account</h2>
             <input type="text" id="signupUsername" placeholder="Username" class="form-input mb-4">
             <input type="email" id="signupEmail" placeholder="Email Address" class="form-input mb-4">
             <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" class="form-input mb-6">
-            <button onclick="signup()" class="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300">Create Account</button>
+            <button onclick="signup()" class="w-full gradient-bg text-white p-3 rounded-lg font-semibold hover:opacity-90 transition-all duration-300">Create Account</button>
         </div>
     </div>
 
     <div id="offersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative">
+        <div class="category-card p-6 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative">
             <button onclick="closeModal('offersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
-            <h2 id="offersModalTitle" class="text-2xl font-bold mb-6 text-center pb-4 border-b border-gray-700"></h2>
+            <h2 id="offersModalTitle" class="text-2xl font-bold mb-6 text-center pb-4 border-b border-gray-700 text-white"></h2>
             <div id="offersGridModal" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto flex-grow">
-                </div>
+                <!-- Offers will be populated here -->
+            </div>
         </div>
     </div>
 
     <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
+        <div class="category-card p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
             <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-white transition-colors">&times;</button>
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-4 border-b border-gray-700">
-                <h2 class="text-2xl font-bold mb-2 sm:mb-0">Place Your Order</h2>
+                <h2 class="text-2xl font-bold mb-2 sm:mb-0 text-white">Place Your Order</h2>
                 <div class="text-left sm:text-right">
                     <p id="orderOfferTitle" class="text-lg font-semibold text-white"></p>
                     <p class="mt-1">Price: <span id="orderPrice" class="text-green-500 font-bold text-2xl"></span></p>
@@ -260,7 +302,9 @@
                             <p class="text-sm text-gray-400">Send total amount to this number:</p>
                             <strong id="paymentNumber" class="text-green-500 text-xl tracking-wider">01767882562</strong>
                         </div>
-                        <i class="fas fa-copy text-gray-400 text-lg"></i>
+                        <button onclick="copyPaymentNumber()" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-copy text-lg"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -270,13 +314,14 @@
                 </div>
             </div>
             
-            <button onclick="placeOrder()" class="w-full mt-8 bg-green-500 text-white p-4 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 text-lg">Submit Order</button>
+            <button onclick="placeOrder()" class="w-full mt-8 gradient-bg text-white p-4 rounded-lg font-semibold hover:opacity-90 transition-all duration-300 text-lg">Submit Order</button>
         </div>
     </div>
+    
     <div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
+        <div class="category-card p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
             <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6">My Order History</h2>
+            <h2 class="text-2xl font-bold mb-6 text-white">My Order History</h2>
             <div class="overflow-x-auto max-h-[60vh]">
                 <table class="w-full text-left">
                     <thead class="bg-gray-700 sticky top-0">
@@ -300,7 +345,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-    // Firebase Config - REMAINS UNCHANGED
+    // Firebase Config
     const firebaseConfig = { 
         apiKey: "AIzaSyDtq1vLVZ9D3CBis6FFSpt8psERGyTG6YM", 
         authDomain: "gen-z-airdrop.firebaseapp.com", 
@@ -395,6 +440,7 @@
         const grid = document.getElementById('categoryGrid');
         grid.innerHTML = '';
         
+        // Get unique categories only
         const categories = [...new Set(Object.values(offersData).map(o => o.category).filter(Boolean))];
         
         if (categories.length === 0) {
@@ -404,11 +450,21 @@
 
         categories.forEach(c => {
             const card = document.createElement('div');
-            card.className = 'bg-gray-700 p-4 rounded-xl text-center cursor-pointer shadow-sm hover:bg-gray-600 transition-colors';
-            card.innerHTML = `<i class="fas fa-gamepad text-2xl text-green-400 mb-2"></i><h4 class="font-semibold text-white">${c}</h4>`;
+            card.className = 'category-card p-4 rounded-xl text-center cursor-pointer shadow-sm hover:bg-gray-700 transition-all';
+            card.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full">
+                    <i class="fas fa-gamepad text-3xl text-green-400 mb-3"></i>
+                    <h4 class="font-semibold text-white text-sm md:text-base">${c}</h4>
+                    <p class="text-xs text-gray-400 mt-1">${countOffersInCategory(c)} offers</p>
+                </div>
+            `;
             card.onclick = () => showOffersForCategory(c);
             grid.appendChild(card);
         });
+    }
+
+    function countOffersInCategory(category) {
+        return Object.values(offersData).filter(o => o.category === category).length;
     }
 
     function showOffersForCategory(category) {
@@ -425,16 +481,16 @@
             if (o.category === category) {
                 hasOffers = true;
                 const card = document.createElement('div');
-                card.className = 'bg-gray-700 rounded-lg shadow-sm border border-gray-600 overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col cursor-pointer';
+                card.className = 'offer-card bg-gray-700 rounded-lg shadow-sm overflow-hidden flex flex-col cursor-pointer';
                 card.onclick = () => showOrderModal(key);
                 card.innerHTML = `
-                    <div class="p-3">
-                        <h3 class="text-md font-bold text-white leading-tight">${o.title}</h3>
-                        <p class="text-gray-400 text-xs mt-1 truncate">${o.description}</p>
-                        <div class="mt-2 pt-2 border-t border-gray-600 flex justify-between items-center">
+                    <div class="p-4 flex-grow flex flex-col">
+                        <h3 class="text-md font-bold text-white leading-tight mb-2">${o.title}</h3>
+                        <p class="text-gray-400 text-xs mb-4 flex-grow">${o.description}</p>
+                        <div class="mt-auto pt-3 border-t border-gray-600 flex justify-between items-center">
                             <div>
                                 ${o.originalPrice ? `<span class="text-xs text-gray-500 line-through">${o.originalPrice} BDT</span>` : ''}
-                                <span class="block text-md font-bold text-green-500">${o.price} BDT</span>
+                                <span class="block text-lg font-bold text-green-500">${o.price} BDT</span>
                             </div>
                             <i class="fas fa-shopping-cart text-lg text-green-500"></i>
                         </div>
@@ -489,7 +545,17 @@
             }
         }
         
-        const order = { uid: user.uid, username: user.displayName, offerId: offer.title, price: offer.price, gameId, paymentMethod: document.getElementById('orderPaymentMethod').value, proofUrl, status: 'pending', timestamp: Date.now() };
+        const order = { 
+            uid: user.uid, 
+            username: user.displayName, 
+            offerId: offer.title, 
+            price: offer.price, 
+            gameId, 
+            paymentMethod: document.getElementById('orderPaymentMethod').value, 
+            proofUrl, 
+            status: 'pending', 
+            timestamp: Date.now() 
+        };
         
         await db.ref('orders').push(order);
         showToast('Order placed successfully!', 'success');
@@ -511,19 +577,32 @@
             }
             
             Object.values(orders).reverse().forEach(o => {
-                const statusClasses = {
-                    pending: 'bg-yellow-100 text-yellow-800',
-                    completed: 'bg-green-100 text-green-800',
-                    cancelled: 'bg-red-100 text-red-800'
-                };
-                const statusClass = statusClasses[o.status] || 'bg-gray-100 text-gray-800';
-                tbody.innerHTML += `<tr class="hover:bg-gray-700"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} BDT</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
+                const statusClass = `status-${o.status}`;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-700">
+                        <td class="p-3">${o.offerId}</td>
+                        <td class="p-3">${o.price} BDT</td>
+                        <td class="p-3">${o.gameId}</td>
+                        <td class="p-3">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">
+                                ${o.status.charAt(0).toUpperCase() + o.status.slice(1)}
+                            </span>
+                        </td>
+                    </tr>
+                `;
             });
         });
     }
 
     function updatePaymentNumber() {
         document.getElementById('paymentNumber').innerText = document.getElementById('orderPaymentMethod').value === 'Bkash' ? '01767882562' : '01767882562';
+    }
+
+    function copyPaymentNumber() {
+        const number = document.getElementById('paymentNumber').innerText;
+        navigator.clipboard.writeText(number)
+            .then(() => showToast('Payment number copied to clipboard!', 'success'))
+            .catch(() => showToast('Failed to copy payment number', 'error'));
     }
 
     // --- Initial Load ---
