@@ -1,566 +1,1088 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primal Z - Ultimate Game Topup Platform</title>
+    <title>Primal Z Topup Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Custom Styles */
         body {
-            font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
-            background-color: #F5F7FB; /* Light gray background */
-            color: #111111; /* Primary text color */
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Tailwind gray-900 */
         }
-        .skeleton {
-            background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        .card {
+            background-color: #1f2937; /* Tailwind gray-800 */
+            border: 1px solid #374151; /* Tailwind gray-700 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 255, 135, 0.1), 0 4px 6px -2px rgba(0, 255, 135, 0.05);
+            border-color: #34d399; /* Tailwind emerald-400 */
         }
-        .modal {
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .footer-bg {
+            background-color: #0f172a; /* Tailwind slate-900 */
         }
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
         }
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            z-index: 1000;
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Styles for Radio buttons in topup page */
+        .recharge-option input:checked + label {
+            border-color: #34d399;
+            background-color: #10B98120;
         }
-        .toast.show {
-            transform: translateX(0);
-        }
-        .toast.success { background-color: #25D366; }
-        .toast.error { background-color: #EF4444; }
-        .toast.info { background-color: #1DA1F2; }
-        .form-input {
-             @apply w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:ring-2 focus:ring-[#FF9A3D] focus:border-[#FF9A3D] transition-all duration-200;
-        }
-        /* Updated offer card with smooth hover effect */
-        .offer-card-compact {
-            @apply flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-white cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-md transform hover:scale-[1.02];
+        .payment-option input:checked + label {
+             border-color: #34d399;
+             box-shadow: 0 0 10px #34d39950;
         }
     </style>
 </head>
-<body class="text-gray-900">
+<body class="text-gray-200">
 
-<div id="ad-banner" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm sm:max-w-md p-4 bg-gradient-to-r from-[#25D366] to-[#1DA1F2] text-white rounded-xl shadow-xl z-50 flex items-center justify-between transition-all duration-500 transform scale-0 opacity-0">
-    <a href="https://t.me/+zk0LEH8ftIw0ZDY9" target="_blank" class="flex items-center space-x-3 flex-grow">
-        <i class="fab fa-telegram-plane text-2xl"></i>
-        <span class="text-sm sm:text-base font-semibold">আমাদের টেলিগ্রাম চ্যানেল জয়েন করতে এখানে ক্লিক করুন</span>
-    </a>
-    <button onclick="closeAdBanner()" class="ml-4 text-2xl font-bold hover:text-gray-200 transition-colors">&times;</button>
-</div>
-
-<div id="notice" class="bg-[#FF9A3D] text-white p-3 text-center font-semibold shadow-md flex items-center justify-center space-x-3 z-30">
-    <i class="fas fa-bell animate-pulse"></i>
-    <span class="text-sm">Loading Notice...</span>
-</div>
-
-<nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
-    <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-            <a href="#" class="flex items-center space-x-2 text-2xl md:text-3xl font-extrabold text-gray-900">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#FF9A3D]" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
-                <span>Primal Z</span>
-            </a>
-            <div class="flex items-center space-x-4">
-                <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button onclick="openModal('loginModal')" class="hidden md:inline-block font-semibold text-gray-600 hover:text-[#FF9A3D] transition-colors px-4 py-2">Login</button>
-                    <button onclick="openModal('signupModal')" class="bg-[#FF9A3D] text-white font-semibold py-2 px-5 rounded-lg hover:bg-orange-500 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
+    <header class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="#" id="home-button" class="text-2xl font-bold text-emerald-400">Primal Z Topup Shop</a>
                 </div>
-                <div id="user-info" class="hidden items-center space-x-4">
-                    <span class="font-semibold text-gray-600 hidden md:block">Welcome, <span id="user-name"></span></span>
-                    <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="font-semibold text-gray-600 hover:text-[#FF9A3D] transition-colors">My Orders</button>
-                    <button onclick="auth.signOut()" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition-all duration-300">Logout</button>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-gray-300 hover:text-emerald-400 transition-colors">Topup</a>
+                    <a href="#" class="text-gray-300 hover:text-emerald-400 transition-colors">Contact Us</a>
+                </div>
+                <div class="flex items-center space-x-4 relative">
+                     <div id="balance-display" class="bg-gray-800 text-emerald-400 font-semibold px-4 py-2 rounded-lg text-sm cursor-pointer">
+                        <span>৳</span> 0
+                    </div>
+                    <div id="auth-container" class="relative">
+                        <button id="login-button" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-emerald-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</nav>
+        </nav>
+    </header>
 
-<section class="py-8 px-4">
-    <div class="container mx-auto max-w-4xl">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div class="text-center md:text-left">
-                <h2 class="text-2xl font-extrabold text-gray-900 leading-tight">Instant Digital Top-Ups</h2>
-                <p class="mt-2 text-sm text-gray-500 max-w-md mx-auto md:mx-0">Need help? Reach out to our dedicated support team.</p>
+    <main id="main-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <h1 class="text-center text-4xl font-bold text-emerald-400 mb-10">Free Fire</h1>
+        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             </div>
-            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                <a href="https://wa.me/8801767882562" target="_blank" class="flex items-center justify-center space-x-2 px-5 py-2.5 bg-[#25D366] text-white font-semibold rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300 w-full sm:w-auto text-sm">
-                    <i class="fab fa-whatsapp text-lg"></i>
-                    <span>WhatsApp</span>
-                </a>
-                <a href="https://t.me/PrimalZbd" target="_blank" class="flex items-center justify-center space-x-2 px-5 py-2.5 bg-[#1DA1F2] text-white font-semibold rounded-full shadow-lg hover:bg-blue-500 transition-colors duration-300 w-full sm:w-auto text-sm">
-                    <i class="fab fa-telegram-plane text-lg"></i>
-                    <span>Telegram</span>
-                </a>
+    </main>
+    
+    <div id="user-dashboard-view" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <button id="back-to-main-dashboard" class="mb-4 text-emerald-400 hover:text-emerald-300">&larr; Back to Products</button>
+        <div class="text-center p-8 bg-gray-800 rounded-lg border border-gray-700">
+            <img src="https://placehold.co/100x100/1f2937/34d399?text=User" alt="User Profile" class="rounded-full w-24 h-24 mx-auto mb-4">
+            <h2 id="dashboard-username" class="text-2xl font-bold text-white">Hi, Srs</h2>
+            <p class="text-gray-400 text-sm">Available Balance: <span id="dashboard-balance">0</span> TK</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+                <p id="dashboard-support-pin" class="text-xl font-bold text-emerald-400">0</p>
+                <p class="text-xs text-gray-400">Support Pin</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+                <p id="dashboard-weekly-spent" class="text-xl font-bold text-emerald-400">0৳</p>
+                <p class="text-xs text-gray-400">Weekly Spent</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+                <p id="dashboard-total-spent" class="text-xl font-bold text-emerald-400">0</p>
+                <p class="text-xs text-gray-400">Total Spent</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center">
+                <p id="dashboard-total-order" class="text-xl font-bold text-emerald-400">0</p>
+                <p class="text-xs text-gray-400">Total Order</p>
             </div>
         </div>
-    </div>
-</section>
-
-<main>
-    <div class="container mx-auto px-4 relative z-10">
-        <div id="offers" class="mb-8">
-            <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200 mb-6">
-                <h3 class="text-xl font-bold mb-4 text-gray-900">Choose a Category</h3>
-                <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    <div class="skeleton bg-gray-100 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-100 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-100 rounded-xl h-24"></div>
-                    <div class="skeleton bg-gray-100 rounded-xl h-24"></div>
+        <div class="mt-8 bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <h3 class="flex items-center font-semibold text-white mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 3v5h5"></path></svg>
+                Account Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg border border-gray-600 text-center bg-gray-900">
+                    <p class="text-white text-lg font-bold"><span id="info-balance">0.00</span>৳</p>
+                    <p class="text-sm text-gray-400">Available Balance</p>
+                </div>
+                <div class="p-4 rounded-lg border border-gray-600 text-center bg-gray-900 flex flex-col items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.8"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <p class="text-sm font-semibold text-emerald-400">Account Verified!</p>
                 </div>
             </div>
         </div>
-    </div>
-</main>
-
-<div class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex items-center space-x-4">
-            <div class="bg-[#25D366]/10 p-4 rounded-full">
-                <i class="fas fa-bolt text-[#25D366] text-2xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg text-gray-900">Instant Delivery</h3>
-                <p class="text-gray-500">Your credits delivered in minutes.</p>
-            </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex items-center space-x-4">
-            <div class="bg-[#1DA1F2]/10 p-4 rounded-full">
-                <i class="fas fa-shield-alt text-[#1DA1F2] text-2xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg text-gray-900">Secure Payments</h3>
-                <p class="text-gray-500">100% safe & secure transactions.</p>
-            </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex items-center space-x-4">
-            <div class="bg-[#FF9A3D]/10 p-4 rounded-full">
-                <i class="fas fa-headset text-[#FF9A3D] text-2xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg text-gray-900">24/7 Support</h3>
-                <p class="text-gray-500">Always here to help you out.</p>
+        <div class="mt-8 bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <h3 class="flex items-center font-semibold text-white mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                User Information
+            </h3>
+            <div class="space-y-4">
+                <p class="text-gray-400">email : <span id="info-email" class="text-white font-semibold"></span></p>
+                <p class="text-gray-400">Phone : <span id="info-phone" class="text-white font-semibold"></span></p>
             </div>
         </div>
     </div>
-</div>
-
-<a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-[#FF9A3D] to-[#1DA1F2] text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
-    <i class="fas fa-headset"></i>
-    <span class="hidden sm:inline">Live Support</span>
-</a>
-
-<footer class="bg-white text-gray-500 mt-20">
-    <div class="container mx-auto px-4 pt-16 pb-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div class="md:col-span-1">
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Primal Z</h3>
-                <p>Your one-stop solution for instant game top-ups. We provide fast, secure, and reliable service for gamers everywhere.</p>
-            </div>
-            <div>
-                 <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h4>
-                 <ul class="space-y-2">
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">Home</a></li>
-                     <li><a href="#offers" class="hover:text-[#FF9A3D] transition-colors">All Offers</a></li>
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">About Us</a></li>
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">Contact Support</a></li>
-                 </ul>
-            </div>
-            <div>
-                 <h4 class="text-lg font-semibold text-gray-900 mb-4">Legal</h4>
-                 <ul class="space-y-2">
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">Terms of Service</a></li>
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">Privacy Policy</a></li>
-                     <li><a href="#" class="hover:text-[#FF9A3D] transition-colors">Refund Policy</a></li>
-                 </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-semibold text-gray-900 mb-4">Partner Services</h4>
-                <p class="mb-4">Visit our partner SMM panel for social media services.</p>
-                <a href="https://fastsmm-panel.vercel.app/" target="_blank" class="inline-block bg-[#1DA1F2] text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition-all flex items-center justify-center space-x-2 w-fit">
-                    <i class="fas fa-globe"></i>
-                    <span>Visit SMM Panel</span>
-                </a>
-            </div>
-        </div>
-        <div class="border-t border-gray-200 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
-            <div class="text-center sm:text-left mb-4 sm:mb-0">
-                &copy; 2025 Primal Z. All Rights Reserved.
-            </div>
-            <div class="flex space-x-4">
-                <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
-                <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
-                <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
-                <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"><i class="fab fa-youtube text-xl"></i></a>
+    
+    <div id="my-orders-view" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <button id="back-to-dashboard-from-orders" class="mb-4 text-emerald-400 hover:text-emerald-300">&larr; Back to Dashboard</button>
+        <h2 class="text-2xl font-bold text-white mb-6">My Orders</h2>
+        <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <div id="orders-list" class="space-y-4">
+                <p class="text-center text-gray-400">Loading your orders...</p>
             </div>
         </div>
     </div>
-</footer>
 
-
-<div id="modals-container">
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-900 transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">Login to Your Account</h2>
-            <input type="email" id="loginEmail" placeholder="Email Address" class="form-input mb-4">
-            <input type="password" id="loginPassword" placeholder="Password" class="form-input mb-6">
-            <button onclick="login()" class="w-full bg-[#FF9A3D] text-white p-3 rounded-lg font-semibold hover:bg-orange-500 transition-all duration-300">Login</button>
-        </div>
-    </div>
-
-    <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-            <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-900 transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">Create a New Account</h2>
-            <input type="text" id="signupUsername" placeholder="Username" class="form-input mb-4">
-            <input type="email" id="signupEmail" placeholder="Email Address" class="form-input mb-4">
-            <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" class="form-input mb-6">
-            <button onclick="signup()" class="w-full bg-[#FF9A3D] text-white p-3 rounded-lg font-semibold hover:bg-orange-500 transition-all duration-300">Create Account</button>
-        </div>
-    </div>
-
-    <div id="offersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative">
-            <button onclick="closeModal('offersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-900 transition-colors">&times;</button>
-            <h2 id="offersModalTitle" class="text-2xl font-bold mb-6 text-center pb-4 border-b border-gray-200 text-gray-900"></h2>
-            <div id="offersGridModal" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto flex-grow">
+    <div id="my-codes-view" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <button id="back-to-dashboard-from-codes" class="mb-4 text-emerald-400 hover:text-emerald-300">&larr; Back to Dashboard</button>
+        <h2 class="text-2xl font-bold text-white mb-6">My Codes</h2>
+        <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <div class="text-center">
+                <h3 class="text-xl font-semibold text-emerald-400 mb-2">Your Monthly Special Code</h3>
+                <p class="text-gray-400 mb-4">Use this code to get a special discount or offer.</p>
+                <div id="monthly-code" class="bg-gray-900 border border-gray-700 rounded-md p-4 flex items-center justify-between text-lg font-bold text-white">
+                    <span>Loading...</span>
+                    <button id="copy-code-btn" class="text-gray-400 hover:text-white transition-colors ml-4 hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
                 </div>
+                 <p id="code-status" class="text-sm mt-2 text-gray-500">Checking code status...</p>
+                 <button id="redeem-code-btn" class="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md transition-colors hidden">Redeem Code</button>
+            </div>
         </div>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
-            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-900 transition-colors">&times;</button>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-4 border-b border-gray-200">
-                <h2 class="text-2xl font-bold mb-2 sm:mb-0 text-gray-900">Place Your Order</h2>
-                <div class="text-left sm:text-right">
-                    <p id="orderOfferTitle" class="text-lg font-semibold text-gray-900"></p>
-                    <p class="mt-1">Price: <span id="orderPrice" class="text-[#FF9A3D] font-bold text-2xl"></span></p>
+    <div id="my-transactions-view" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <button id="back-to-dashboard-from-transactions" class="mb-4 text-emerald-400 hover:text-emerald-300">&larr; Back to Dashboard</button>
+        <h2 class="text-2xl font-bold text-white mb-6">My Transactions</h2>
+        <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <div id="transactions-list" class="space-y-4">
+                 <p class="text-center text-gray-400">Loading your transactions...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="topup-details-view" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 hidden">
+        <button id="back-to-main" class="mb-4 text-emerald-400 hover:text-emerald-300">&larr; Back to Products</button>
+        <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+            <h2 class="text-2xl font-bold text-white mb-4"></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-4">① Select Recharge</h3>
+                    <div id="recharge-options-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <p class="text-gray-400 col-span-full">Loading offers...</p>
+                    </div>
+                     <p class="text-sm mt-4 text-gray-400">
+                        <a href="#" class="text-emerald-400 hover:underline">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-middle mr-1"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"></path><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                            কিভাবে রিচার্জ করবেন ?
+                        </a>
+                     </p>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-semibold text-emerald-400 mb-4">② Account Info</h3>
+                        <input type="text" placeholder="এখানে প্লেয়ার আইডি কোড দিন" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                         <h3 class="font-semibold text-emerald-400 mb-4">③ Select one option</h3>
+                         <div class="grid grid-cols-2 gap-4">
+                            <div class="payment-option">
+                                <input type="radio" id="wallet-pay" name="payment" class="hidden">
+                                <label for="wallet-pay" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
+                                    <img src="https://placehold.co/80x40/1f2937/ffffff?text=Primal+Z" alt="Wallet Pay" class="h-8 mb-2">
+                                    <span class="text-sm">Wallet Pay</span>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="instant-pay" name="payment" class="hidden">
+                                <label for="instant-pay" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
+                                    <img src="https://placehold.co/80x40/ffffff/000000?text=Instant" alt="Instant Pay" class="h-8 mb-2">
+                                    <span class="text-sm">Instant Pay</span>
+                                </label>
+                            </div>
+                         </div>
+                         <div class="space-y-2 text-gray-400 text-sm mt-4">
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-1 mr-2"><path d="M22 12A10 10 0 0 1 12 2a10 10 0 0 0 0 20A10 10 0 0 0 22 12z"></path><path d="M16 8l-6 6"></path><path d="M12 16l4-4"></path><path d="M8 8l4 4"></path></svg>
+                                <span>আপনার অ্যাকাউন্টের ব্যালেন্স: <strong class="text-white">৳0.00</strong></span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-1 mr-2"><path d="M22 12A10 10 0 0 1 12 2a10 10 0 0 0 0 20A10 10 0 0 0 22 12z"></path><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                                <span>ডায়মন্ড ইনস্ট্যান্ট পেমেন্ট হবে ২৪/৭</span>
+                            </div>
+                         </div>
+                    </div>
+                     <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-md transition-colors text-lg">Buy Now</button>
+                </div>
+            </div>
+             <div class="mt-8 border-t border-gray-700 pt-6">
+                <h3 class="font-semibold text-white mb-4">Rules & Conditions</h3>
+                <ul class="list-disc list-inside text-gray-400 text-sm space-y-2">
+                    <li>শুধুমাত্র Bangladesh সার্ভারে ID Code দিয়ে টপ আপ করা যাবে।</li>
+                    <li>Player ID Code ভুল দিয়ে Diamond না পেলে Primal Z Topup Shop কতৃপক্ষ দায়ী নয়।</li>
+                    <li>Order কমপ্লিট হওয়ার পরেও আইডিতে ডায়মন্ড না গেলে হেল্পলাইনে মেসেজ দিন।</li>
+                    <li>অর্ডার Cancel হলে কি কারণে তা Cancel হয়েছে তা জানতে ইনভয়েসের ডিটেইলস অপশনে দেখতে পারবেন।</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="login-required-message" class="text-center py-20">
+        <h2 class="text-2xl font-bold text-gray-400">Please log in to view products.</h2>
+        <p class="text-gray-500 mt-2">Click the user icon in the top right to sign in or create an account.</p>
+    </div>
+
+
+    <footer class="footer-bg border-t border-gray-800 pt-12 pb-6 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">STAY CONNECTED</h3>
+                    <p class="text-gray-400 text-sm max-w-sm mb-4">
+                        আমাদের সাথে সংযুক্ত থাকতে ফলো করে পাশে থাকুন। যেকোনো প্রয়োজনে বা সমস্যায় মেসেজ করুন।
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                         <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">SUPPORT CENTER</h3>
+                    <div class="space-y-3">
+                         <a href="#" class="flex items-center p-3 border border-gray-700 rounded-lg hover:border-emerald-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#25D366" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M19.1 4.9C17.2 3 14.7 2 12 2S6.8 3 4.9 4.9C3 6.8 2 9.3 2 12s1 5.2 2.9 7.1C6.8 21 9.3 22 12 22h.1c.6 0 1.1 0 1.7-.1l3.9 1.2c.4.1.8.1.9-.3.1-.2 0-.5-.1-.7l-1.3-3.9c.5-.6.9-1.2 1.3-1.8.2-.3.4-.6.5-.9.4-.8.7-1.7.9-2.6.1-.5.1-1 .1-1.5v-.1c0-2.7-1-5.2-2.9-7.1z"></path><path d="M7.6 6.9c.2-.2.5-.3.8-.3.3 0 .6.1.8.3l.2.2c.2.2.3.5.3.8s-.1.6-.3.8l-4.5 4.5c-.2.2-.5.3-.8.3s-.6-.1-.8-.3l-2.2-2.2c-.2-.2-.3-.5-.3-.8s.1-.6.3-.8l.2-.2c.2-.2.5-.3.8-.3s.6.1.8.3z" fill="white"></path></svg>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold">Help Line (11AM-12PM)</p>
+                                <p class="text-xs text-gray-400">Whatsapp HelpLine</p>
+                            </div>
+                        </a>
+                         <a href="#" class="flex items-center p-3 border border-gray-700 rounded-lg hover:border-emerald-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#2AABEE" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10z"></path><path d="M16 8l-8 4 3 1 1 5 2-3z"></path></svg>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold">Help Line (11AM-12PM)</p>
+                                <p class="text-xs text-gray-400">টেলিগ্রাম হেল্পলাইন</p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
             
-            <div class="space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="orderGameId" class="block mb-2 font-semibold text-gray-500">Your Game UID / ID</label>
-                        <input type="text" id="orderGameId" placeholder="e.g., 123456789" class="form-input">
+            <div class="text-center text-gray-500 text-xs border-t border-gray-800 pt-6 mt-8">
+                &copy; Primal Z Topup Shop 2023 | All Rights Reserved | Developed by Team Mohal
+            </div>
+        </div>
+    </footer>
+
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-gray-800 w-full max-w-md p-6 rounded-lg shadow-xl border border-gray-700 relative">
+            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">&times;</button>
+            <h2 class="text-2xl font-bold text-center text-emerald-400 mb-6">Login</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="login-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" id="login-email" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="mb-6">
+                    <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="login-password" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <p id="login-error" class="text-red-500 text-sm text-center mb-4"></p>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-md transition-colors">Login</button>
+            </form>
+            <p class="text-center text-sm text-gray-400 mt-4">
+                Don't have an account? <a href="#" id="show-signup" class="text-emerald-400 hover:underline">Sign up</a>
+            </p>
+        </div>
+    </div>
+    <div id="signup-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-gray-800 w-full max-w-md p-6 rounded-lg shadow-xl border border-gray-700 relative">
+            <button id="close-signup-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">&times;</button>
+            <h2 class="text-2xl font-bold text-center text-emerald-400 mb-6">Create Account</h2>
+            <form id="signup-form">
+                <div class="mb-4">
+                    <label for="signup-username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                    <input type="text" id="signup-username" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="mb-4">
+                    <label for="signup-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" id="signup-email" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="mb-4">
+                    <label for="signup-mobile" class="block text-sm font-medium text-gray-300 mb-2">Mobile Number</label>
+                    <input type="tel" id="signup-mobile" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="mb-4">
+                    <label for="signup-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="signup-password" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="mb-6">
+                    <label for="signup-confirm-password" class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                 <p id="signup-error" class="text-red-500 text-sm text-center mb-4"></p>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-md transition-colors">Sign Up</button>
+            </form>
+            <p class="text-center text-sm text-gray-400 mt-4">
+                Already have an account? <a href="#" id="show-login" class="text-emerald-400 hover:underline">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="add-money-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-gray-800 w-full max-w-md p-6 rounded-lg shadow-xl border border-gray-700 relative">
+            <button id="close-add-money-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">&times;</button>
+            <h2 class="text-2xl font-bold text-center text-emerald-400 mb-6">Add Money</h2>
+            <form id="add-money-form">
+                <p class="text-sm text-gray-400 mb-4">You have to send money to this number and submit the transaction ID to get balance.</p>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="payment-option">
+                            <input type="radio" id="bkash" name="payment-method" class="hidden" value="bKash" required>
+                            <label for="bkash" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
+                                <img src="https://placehold.co/80x40/E2136E/ffffff?text=bKash" alt="bKash" class="h-8 mb-2">
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="nagad" name="payment-method" class="hidden" value="Nagad">
+                            <label for="nagad" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
+                                <img src="https://placehold.co/80x40/F58220/ffffff?text=Nagad" alt="Nagad" class="h-8 mb-2">
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="rocket" name="payment-method" class="hidden" value="Rocket">
+                            <label for="rocket" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
+                                <img src="https://placehold.co/80x40/8E297A/ffffff?text=Rocket" alt="Rocket" class="h-8 mb-2">
+                            </label>
+                        </div>
                     </div>
-                    <div>
-                        <label for="orderPaymentMethod" class="block mb-2 font-semibold text-gray-500">Payment Method</label>
-                        <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="form-input">
-                            <option value="Bkash">Bkash</option>
-                            <option value="Nagad">Nagad</option>
-                        </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="payment-number" class="block text-sm font-medium text-gray-300 mb-2">Send Money To</label>
+                    <div id="payment-number" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white text-center font-bold">
+                        Please select a payment method
                     </div>
                 </div>
                 
-                <div>
-                    <p class="block mb-2 font-semibold text-gray-500">Payment Instructions</p>
-                    <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Send total amount to this number:</p>
-                            <strong id="paymentNumber" class="text-[#FF9A3D] text-xl tracking-wider">01767882562</strong>
-                        </div>
-                        <i class="fas fa-copy text-gray-500 text-lg"></i>
-                    </div>
+                <div class="mb-4">
+                    <label for="add-money-amount" class="block text-sm font-medium text-gray-300 mb-2">Enter Amount</label>
+                    <input type="number" id="add-money-amount" min="10" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
+                <div class="mb-6">
+                    <label for="add-money-trxid" class="block text-sm font-medium text-gray-300 mb-2">Enter Transaction ID</label>
+                    <input type="text" id="add-money-trxid" required class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <p id="add-money-error" class="text-red-500 text-sm text-center mb-4"></p>
+                <p id="add-money-success" class="text-emerald-500 text-sm text-center mb-4"></p>
 
-                <div>
-                    <label for="paymentProof" class="block mb-2 font-semibold text-gray-500">Payment Screenshot</label>
-                    <input type="file" id="paymentProof" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FF9A3D]/10 file:text-[#FF9A3D] hover:file:bg-[#FF9A3D]/20 transition-colors cursor-pointer">
-                </div>
-            </div>
-            
-            <button onclick="placeOrder()" class="w-full mt-8 bg-[#FF9A3D] text-white p-4 rounded-lg font-semibold hover:bg-orange-500 transition-all duration-300 text-lg">Submit Order</button>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-md transition-colors">Submit Request</button>
+            </form>
         </div>
     </div>
-    <div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
-            <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-900 transition-colors">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">My Order History</h2>
-            <div class="overflow-x-auto max-h-[60vh]">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-100 sticky top-0">
-                        <tr>
-                            <th class="p-3 font-semibold text-sm text-gray-600">Offer</th>
-                            <th class="p-3 font-semibold text-sm text-gray-600">Price</th>
-                            <th class="p-3 font-semibold text-sm text-gray-600">Game UID</th>
-                            <th class="p-3 font-semibold text-sm text-gray-600">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="myOrdersBody" class="divide-y divide-gray-200"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div id="toast" class="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script>
-    // Firebase Config - REMAINS UNCHANGED
-    const firebaseConfig = { 
-        apiKey: "AIzaSyDtq1vLVZ9D3CBis6FFSpt8psERGyTG6YM", 
-        authDomain: "gen-z-airdrop.firebaseapp.com", 
-        databaseURL: "https://gen-z-airdrop-default-rtdb.asia-southeast1.firebasedatabase.app", 
-        projectId: "gen-z-airdrop", 
-        storageBucket: "gen-z-airdrop.firebasestorage.app", 
-        messagingSenderId: "1056087088959", 
-        appId: "1:1056087088959:web:2d15418429c2f378f2bd8a", 
-        measurementId: "G-CKB3HP9D31" 
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    let offersData = {};
-    let selectedOfferKey = null;
-
-    // --- Modal Functions ---
-    function openModal(modalId) { 
-        document.getElementById(modalId).classList.add('active');
-    }
-    
-    function closeModal(modalId) { 
-        document.getElementById(modalId).classList.remove('active');
-    }
-
-    // --- Toast Notification ---
-    function showToast(message, type = 'info') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = `toast ${type} show`;
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // --- Auth State Change ---
-    auth.onAuthStateChanged(user => {
-        const authButtons = document.getElementById('auth-buttons');
-        const userInfo = document.getElementById('user-info');
-        if (user) {
-            authButtons.classList.add('hidden');
-            userInfo.classList.remove('hidden');
-            userInfo.classList.add('flex');
-            document.getElementById('user-name').innerText = user.displayName || user.email;
-        } else {
-            authButtons.classList.remove('hidden');
-            userInfo.classList.add('hidden');
-            userInfo.classList.remove('flex');
-        }
-    });
-
-    // --- Auth Functions ---
-    function login() {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-        if (!email || !pass) return showToast('Please fill in all fields', 'error');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            get,
+            onValue,
+            query,
+            orderByChild,
+            equalTo,
+            push
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
         
-        auth.signInWithEmailAndPassword(email, pass)
-            .then((userCredential) => {
-                closeModal('loginModal');
-                showToast(`Welcome back, ${userCredential.user.displayName || userCredential.user.email}!`, 'success');
-            })
-            .catch(e => showToast(`Login failed: ${e.message}`, 'error'));
-    }
-    
-    function signup() {
-        const username = document.getElementById('signupUsername').value;
-        const email = document.getElementById('signupEmail').value;
-        const pass = document.getElementById('signupPassword').value;
-        if (!username.trim() || !email || !pass) return showToast('Please fill in all fields', 'error');
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtq1vLVZ9D3CBis6FFSpt8psERGyTG6YM",
+            authDomain: "gen-z-airdrop.firebaseapp.com",
+            databaseURL: "https://gen-z-airdrop-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "gen-z-airdrop",
+            storageBucket: "gen-z-airdrop.firebasestorage.app",
+            messagingSenderId: "1056087088959",
+            appId: "1:1056087088959:web:2d15418429c2f378f2bd8a",
+            measurementId: "G-CKB3HP9D31"
+        };
         
-        auth.createUserWithEmailAndPassword(email, pass)
-            .then(cred => {
-                cred.user.updateProfile({ displayName: username });
-                db.ref('users/' + cred.user.uid).set({ username, email, banned: false });
-                closeModal('signupModal');
-                showToast('Account created successfully!', 'success');
-            })
-            .catch(e => showToast(`Signup failed: ${e.message}`, 'error'));
-    }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-    // --- Load and Render Offers ---
-    function loadOffers() {
-        db.ref('offers').on('value', snap => {
-            offersData = snap.val() || {};
-            populateCategoryGrid();
+        const mainContent = document.getElementById('main-content');
+        const topupDetailsView = document.getElementById('topup-details-view');
+        const userDashboardView = document.getElementById('user-dashboard-view');
+        const myOrdersView = document.getElementById('my-orders-view');
+        const myCodesView = document.getElementById('my-codes-view');
+        const myTransactionsView = document.getElementById('my-transactions-view');
+        const loginRequiredMessage = document.getElementById('login-required-message');
+        const authContainer = document.getElementById('auth-container');
+        const productGrid = document.getElementById('product-grid');
+        const balanceDisplay = document.getElementById('balance-display');
+        const backToMainBtn = document.getElementById('back-to-main');
+        const backToMainDashboardBtn = document.getElementById('back-to-main-dashboard');
+        const backToDashboardFromOrdersBtn = document.getElementById('back-to-dashboard-from-orders');
+        const backToDashboardFromCodesBtn = document.getElementById('back-to-dashboard-from-codes');
+        const backToDashboardFromTransactionsBtn = document.getElementById('back-to-dashboard-from-transactions');
+        const homeButton = document.getElementById('home-button');
+        const contactUsLink = document.getElementById('contact-us-link');
+        const supportLink = document.getElementById('support-link');
+
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const addMoneyModal = document.getElementById('add-money-modal'); // New modal
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const addMoneyForm = document.getElementById('add-money-form'); // New form
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const addMoneyError = document.getElementById('add-money-error'); // New error element
+        const addMoneySuccess = document.getElementById('add-money-success'); // New success element
+        const userAvatarButton = document.getElementById('user-avatar-button');
+        const userMenu = document.getElementById('user-menu');
+
+        // Payment number that the user provided
+        const paymentNumber = "01767882562";
+
+        // Product data mapping for dynamic display
+        const productMapping = {
+            id_code_topup: {
+                title: 'ID CODE TOPUP',
+                subtitle: 'Free Fire TopUp [ID]',
+                image: 'https://admin.ggbazar.com/products/1753595063.jpg'
+            },
+            level_up_pass: {
+                title: 'LEVEL UP PASS',
+                subtitle: 'Level Up Pass (ID Server)',
+                image: 'https://admin.ggbazar.com/products/1753595356.jpg'
+            },
+            weekly_lite: {
+                title: 'WEEKLY LITE',
+                subtitle: 'Weekly Lite',
+                image: 'https://admin.ggbazar.com/products/1753595608.jpg'
+            },
+            weekly_monthly: {
+                title: 'WEEKLY MONTHLY',
+                subtitle: 'Weekly/Monthly Offer',
+                image: 'https://admin.ggbazar.com/products/1753595752.jpg'
+            },
+            unipin_voucher: {
+                title: 'UNIPIN VOUCHER',
+                subtitle: 'UNIPIN VOUCHER ID',
+                image: 'https://placehold.co/150x150/1f2937/34d399?text=Unipin'
+            },
+            evo_access: {
+                title: 'EVO ACCESS',
+                subtitle: 'E-badge/Evo Access (ID Server)',
+                image: 'https://placehold.co/150x150/1f2937/34d399?text=Evo'
+            },
+            indonesia_server: {
+                title: 'INDONESIA SERVER',
+                subtitle: 'Indonesia Server [IDS]',
+                image: 'https://placehold.co/150x150/1f2937/34d399?text=Indo'
+            },
+            airdrop_id_code: {
+                title: 'AIRDROP ID CODE',
+                subtitle: 'AIRSHOP [ID CODE]',
+                image: 'https://placehold.co/150x150/1f2937/34d399?text=Airdrop'
+            }
+        };
+
+        // View Navigation
+        const hideAllViews = () => {
+            mainContent.classList.add('hidden');
+            topupDetailsView.classList.add('hidden');
+            userDashboardView.classList.add('hidden');
+            myOrdersView.classList.add('hidden');
+            myCodesView.classList.add('hidden');
+            myTransactionsView.classList.add('hidden');
+            loginRequiredMessage.classList.add('hidden');
+        };
+
+        const showMainView = async () => {
+            hideAllViews();
+            mainContent.classList.remove('hidden');
+            await loadProductCards();
+        };
+
+        const showTopupDetailsView = async (productId) => {
+            hideAllViews();
+            topupDetailsView.classList.remove('hidden');
+            const productInfo = productMapping[productId];
+            if (productInfo) {
+                document.querySelector('#topup-details-view h2').textContent = `${productInfo.title} (BD Server)`;
+            }
+            await loadRechargeOptions(productId);
+        };
+        
+        const showUserDashboardView = (user) => {
+            hideAllViews();
+            userDashboardView.classList.remove('hidden');
+            fetchUserData(user);
+        };
+
+        const showMyOrdersView = () => {
+            hideAllViews();
+            myOrdersView.classList.remove('hidden');
+            loadMyOrders();
+        };
+
+        const showMyCodesView = () => {
+            hideAllViews();
+            myCodesView.classList.remove('hidden');
+            loadMyCodes();
+        };
+
+        const showMyTransactionsView = () => {
+            hideAllViews();
+            myTransactionsView.classList.remove('hidden');
+            loadMyTransactions();
+        };
+        
+        const showAddMoneyModal = () => {
+            addMoneyModal.classList.remove('hidden');
+        };
+
+
+        backToMainBtn.addEventListener('click', showMainView);
+        backToMainDashboardBtn.addEventListener('click', showMainView);
+        backToDashboardFromOrdersBtn.addEventListener('click', () => showUserDashboardView(auth.currentUser));
+        backToDashboardFromCodesBtn.addEventListener('click', () => showUserDashboardView(auth.currentUser));
+        backToDashboardFromTransactionsBtn.addEventListener('click', () => showUserDashboardView(auth.currentUser));
+        homeButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            showMainView();
         });
-    }
 
-    function populateCategoryGrid() {
-        const grid = document.getElementById('categoryGrid');
-        grid.innerHTML = '';
-        
-        const categories = [...new Set(Object.values(offersData).map(o => o.category).filter(Boolean))];
-        
-        if (categories.length === 0) {
-            grid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-gamepad text-6xl text-gray-400 mb-4"></i><h3 class="text-xl font-semibold text-gray-500">No categories available right now</h3></div>`;
-            return;
+        // Set up static links
+        // The previous Contact Us link was just #, now it's a real link
+        const oldContactUsLink = document.querySelector('a.hover\\:text-emerald-400[href="#"]');
+        if (oldContactUsLink) {
+            oldContactUsLink.href = "https://www.facebook.com/profile.php?id=61573400562507";
+            oldContactUsLink.target = "_blank";
         }
-
-        categories.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'bg-white p-4 rounded-xl text-center cursor-pointer shadow-sm hover:bg-gray-100 transition-colors';
-            card.innerHTML = `<i class="fas fa-gamepad text-2xl text-[#FF9A3D] mb-2"></i><h4 class="font-semibold text-gray-900">${c}</h4>`;
-            card.onclick = () => showOffersForCategory(c);
-            grid.appendChild(card);
-        });
-    }
-
-    function showOffersForCategory(category) {
-        const offersModal = document.getElementById('offersModal');
-        const offersGrid = document.getElementById('offersGridModal');
-        const title = document.getElementById('offersModalTitle');
         
-        title.innerText = `${category} Offers`;
-        offersGrid.innerHTML = '';
-        
-        let hasOffers = false;
-        Object.keys(offersData).forEach(key => {
-            const o = offersData[key];
-            if (o.category === category) {
-                hasOffers = true;
-                const card = document.createElement('div');
-                card.className = 'offer-card-compact'; // Use the new class
-                card.onclick = () => showOrderModal(key);
-                card.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-gray-400"></div>
-                        <h3 class="text-sm font-semibold text-gray-900">${o.title}</h3>
-                    </div>
-                    <span class="text-sm font-bold text-[#FF9A3D]">${o.price} TK</span>
-                `;
-                offersGrid.appendChild(card);
+        // Toggle user menu dropdown
+        document.addEventListener('click', (event) => {
+            if (event.target.closest('#user-avatar-button')) {
+                const userMenu = document.getElementById('user-menu');
+                if (userMenu) {
+                    userMenu.classList.toggle('hidden');
+                }
+            } else if (userMenu && !userMenu.contains(event.target) && !event.target.closest('#user-avatar-button')) {
+                userMenu.classList.add('hidden');
             }
         });
         
-        if (!hasOffers) {
-            offersGrid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-search text-6xl text-gray-400 mb-4"></i><h3 class="text-xl font-semibold text-gray-500">No offers found for this category.</h3></div>`;
-        }
-        
-        openModal('offersModal');
-    }
+        balanceDisplay.addEventListener('click', () => {
+            const user = auth.currentUser;
+            if(user) {
+                showUserDashboardView(user);
+            } else {
+                alert("Please log in to view your dashboard.");
+            }
+        });
 
-    // --- Order Functions ---
-    function showOrderModal(key) {
-        if (!auth.currentUser) {
-            showToast('Please login to place an order', 'error');
-            return openModal('loginModal');
-        }
-        selectedOfferKey = key;
-        const offer = offersData[key];
-        document.getElementById('orderOfferTitle').innerText = offer.title;
-        document.getElementById('orderPrice').innerText = `${offer.price} BDT`;
-        openModal('orderModal');
-    }
-
-    async function placeOrder() {
-        const user = auth.currentUser;
-        if (!user) return;
-        
-        const offer = offersData[selectedOfferKey];
-        const gameId = document.getElementById('orderGameId').value;
-        if (!gameId) return showToast('Please enter your Game UID', 'error');
-        
-        let proofUrl = '';
-        const proofFile = document.getElementById('paymentProof').files[0];
-        
-        if (proofFile) {
-            const formData = new FormData();
-            formData.append('image', proofFile);
+        // Load Product Cards from Realtime Database
+        const loadProductCards = async () => {
+            productGrid.innerHTML = '<p class="text-gray-400 col-span-full text-center">Loading products...</p>';
             try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=213fd215f712156cc6a6ab529469da2f`, { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.success) proofUrl = data.data.url;
-                else throw new Error(data.error.message);
-            } catch (error) {
-                showToast('Image upload failed: ' + error.message, 'error');
-                return;
-            }
-        }
-        
-        const order = { uid: user.uid, username: user.displayName, offerId: offer.title, price: offer.price, gameId, paymentMethod: document.getElementById('orderPaymentMethod').value, proofUrl, status: 'pending', timestamp: Date.now() };
-        
-        await db.ref('orders').push(order);
-        showToast('Order placed successfully!', 'success');
-        closeModal('orderModal');
-        document.getElementById('orderGameId').value = '';
-        document.getElementById('paymentProof').value = '';
-    }
+                const productsRef = ref(db, 'products');
+                const snapshot = await get(productsRef);
+                if (!snapshot.exists()) {
+                    productGrid.innerHTML = '<p class="text-gray-400 col-span-full text-center">No products available.</p>';
+                    return;
+                }
 
-    function loadMyOrders() {
-        const uid = auth.currentUser.uid;
-        db.ref('orders').orderByChild('uid').equalTo(uid).on('value', snap => {
-            const tbody = document.getElementById('myOrdersBody');
-            tbody.innerHTML = '';
-            const orders = snap.val() || {};
-            
-            if (Object.keys(orders).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-gray-400"><i class="fas fa-shopping-cart text-4xl mb-3"></i><p>You haven't placed any orders yet.</p></td></tr>`;
+                let cardsHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const productId = childSnapshot.key;
+                    const productData = childSnapshot.val();
+
+                    // Check if the product ID is in our mapping
+                    if (productMapping[productId]) {
+                         const mappedInfo = productMapping[productId];
+                         const imageSrc = productData.image || mappedInfo.image;
+                         const onlineStatus = productData.status === 'online' ? 'bg-green-500' : 'bg-red-500';
+                         const statusHTML = productData.status ? `<div class="absolute top-2 right-2 w-4 h-4 ${onlineStatus} rounded-full border-2 border-gray-800"></div>` : '';
+                         
+                         cardsHTML += `
+                            <div class="card rounded-lg overflow-hidden text-center cursor-pointer p-4 relative" data-product-id="${productId}">
+                                ${statusHTML}
+                                <img src="${imageSrc}" alt="${mappedInfo.title}" class="mx-auto h-20 w-20 object-cover rounded-md mb-3">
+                                <h3 class="font-semibold text-sm">${mappedInfo.title}</h3>
+                                <p class="text-xs text-gray-400">${mappedInfo.subtitle}</p>
+                            </div>
+                         `;
+                    }
+                });
+                productGrid.innerHTML = cardsHTML;
+            } catch (error) {
+                console.error("Error loading product cards:", error);
+                productGrid.innerHTML = '<p class="text-red-500 col-span-full text-center">Failed to load products. Please try again later.</p>';
+            }
+        };
+
+        // Load Recharge options from Realtime Database
+        const loadRechargeOptions = async (productId) => {
+            const container = document.getElementById('recharge-options-container');
+            container.innerHTML = '<p class="text-gray-400 col-span-full">Loading offers...</p>';
+            try {
+                const offersRef = ref(db, `products/${productId}/offers`);
+                const snapshot = await get(offersRef);
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p class="text-gray-40-full">No offers available for this product.</p>';
+                    return;
+                }
+
+                let optionsHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const offer = childSnapshot.val();
+                    const id = childSnapshot.key;
+                    
+                    let offerText = '';
+                    if (offer.world_number) {
+                        offerText = offer.world_number;
+                    } else if (offer.amount) {
+                        offerText = offer.amount;
+                    } else if (offer.weekly_amount && offer.monthly_amount) {
+                        offerText = `Weekly: ${offer.weekly_amount} / Monthly: ${offer.monthly_amount}`;
+                    } else if (offer.diamonds) {
+                        offerText = offer.diamonds;
+                    }
+                    
+                    optionsHTML += `
+                        <div class="recharge-option">
+                            <input type="radio" id="${id}" name="recharge" class="hidden" value="${offer.price}">
+                            <label for="${id}" class="block border-2 border-gray-600 rounded-md p-3 text-center cursor-pointer transition-colors">
+                                <span class="font-bold text-sm text-white">${offerText}</span>
+                                <span class="text-xs text-emerald-400">${offer.price} TK</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                container.innerHTML = optionsHTML;
+            } catch (error) {
+                console.error("Error loading recharge options:", error);
+                container.innerHTML = '<p class="text-red-500 col-span-full">Failed to load offers.</p>';
+            }
+        };
+
+        // Load My Orders
+        const loadMyOrders = () => {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '<p class="text-center text-gray-400">Loading your orders...</p>';
+            const user = auth.currentUser;
+            if (!user) {
+                ordersList.innerHTML = '<p class="text-center text-red-500">Please log in to view your orders.</p>';
                 return;
             }
-            
-            Object.values(orders).reverse().forEach(o => {
-                const statusClasses = {
-                    pending: 'bg-yellow-100 text-yellow-800',
-                    completed: 'bg-green-100 text-green-800',
-                    cancelled: 'bg-red-100 text-red-800'
-                };
-                const statusClass = statusClasses[o.status] || 'bg-gray-100 text-gray-800';
-                tbody.innerHTML += `<tr class="hover:bg-gray-100"><td class="p-3 text-gray-800">${o.offerId}</td><td class="p-3 text-gray-800">${o.price} BDT</td><td class="p-3 text-gray-800">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
+            const ordersRef = query(ref(db, 'orders'), orderByChild('userId'), equalTo(user.uid));
+            onValue(ordersRef, (snapshot) => {
+                if (!snapshot.exists()) {
+                    ordersList.innerHTML = '<p class="text-center text-gray-400">You have no orders yet.</p>';
+                    return;
+                }
+                let ordersHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const order = childSnapshot.val();
+                    const orderKey = childSnapshot.key;
+                    const timestamp = new Date(order.timestamp).toLocaleString();
+                    ordersHTML += `
+                        <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold text-white">Order ID: <span class="text-emerald-400 text-sm">${orderKey}</span></h4>
+                                <span class="text-sm text-gray-500">${timestamp}</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Product: <span class="text-white">${order.productName || 'N/A'}</span></p>
+                            <p class="text-sm text-gray-400">Amount: <span class="text-white">৳${order.amount || '0'}</span></p>
+                            <p class="text-sm text-gray-400">Status: <span class="font-semibold ${order.status === 'completed' ? 'text-green-500' : 'text-yellow-500'}">${order.status || 'pending'}</span></p>
+                        </div>
+                    `;
+                });
+                ordersList.innerHTML = ordersHTML;
+            });
+        };
+
+        // Load My Transactions
+        const loadMyTransactions = () => {
+            const transactionsList = document.getElementById('transactions-list');
+            transactionsList.innerHTML = '<p class="text-center text-gray-400">Loading your transactions...</p>';
+            const user = auth.currentUser;
+            if (!user) {
+                transactionsList.innerHTML = '<p class="text-center text-red-500">Please log in to view your transactions.</p>';
+                return;
+            }
+            const transactionsRef = query(ref(db, 'add_money_requests'), orderByChild('userId'), equalTo(user.uid));
+            onValue(transactionsRef, (snapshot) => {
+                if (!snapshot.exists()) {
+                    transactionsList.innerHTML = '<p class="text-center text-gray-400">You have no transactions yet.</p>';
+                    return;
+                }
+                let transactionsHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const transaction = childSnapshot.val();
+                    const timestamp = new Date(transaction.timestamp).toLocaleString();
+                    transactionsHTML += `
+                         <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold text-white">Amount: <span class="text-emerald-400">৳${transaction.amount}</span></h4>
+                                <span class="text-sm text-gray-500">${timestamp}</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Method: <span class="text-white">${transaction.paymentMethod}</span></p>
+                            <p class="text-sm text-gray-400">Transaction ID: <span class="text-white">${transaction.transactionId}</span></p>
+                            <p class="text-sm text-gray-400">Status: <span class="font-semibold ${transaction.status === 'approved' ? 'text-green-500' : 'text-yellow-500'}">${transaction.status}</span></p>
+                        </div>
+                    `;
+                });
+                transactionsList.innerHTML = transactionsHTML;
+            });
+        };
+
+        const generateRandomCode = (length) => {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        };
+
+        // Load My Codes
+        const loadMyCodes = async () => {
+            const user = auth.currentUser;
+            if (!user) {
+                document.getElementById('monthly-code').textContent = 'Please log in.';
+                return;
+            }
+
+            const codeRef = ref(db, `users/${user.uid}/my_codes`);
+            const codeSnapshot = await get(codeRef);
+            const monthlyCodeDiv = document.getElementById('monthly-code');
+            const codeStatusDiv = document.getElementById('code-status');
+            const redeemButton = document.getElementById('redeem-code-btn');
+            const copyButton = document.getElementById('copy-code-btn');
+
+            const today = new Date();
+            const currentMonthYear = `${today.getFullYear()}-${today.getMonth()}`;
+
+            let codeData = codeSnapshot.val();
+            let code = null;
+
+            if (codeData && codeData.generationMonth === currentMonthYear) {
+                code = codeData.code;
+                monthlyCodeDiv.innerHTML = `<span>${code}</span>`;
+                copyButton.classList.remove('hidden');
+                if (codeData.status === 'used') {
+                    codeStatusDiv.textContent = 'Status: Used this month.';
+                    codeStatusDiv.classList.add('text-red-500');
+                    redeemButton.classList.add('hidden');
+                } else {
+                    codeStatusDiv.textContent = 'Status: Unused. Use it to redeem your offer!';
+                    codeStatusDiv.classList.add('text-emerald-400');
+                    redeemButton.classList.remove('hidden');
+                }
+            } else {
+                // Generate a new code
+                const newCode = generateRandomCode(10);
+                await set(codeRef, {
+                    code: newCode,
+                    generationMonth: currentMonthYear,
+                    status: 'unused'
+                });
+                monthlyCodeDiv.innerHTML = `<span>${newCode}</span>`;
+                copyButton.classList.remove('hidden');
+                codeStatusDiv.textContent = 'Status: New code generated for this month. Use it to redeem your offer!';
+                codeStatusDiv.classList.add('text-emerald-400');
+                redeemButton.classList.remove('hidden');
+            }
+        };
+
+        const fetchUserData = (user) => {
+            if (!user) return;
+            const userRef = ref(db, 'users/' + user.uid);
+            onValue(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    document.getElementById('dashboard-username').textContent = `Hi, ${userData.username || 'User'}`;
+                    document.getElementById('dashboard-balance').textContent = userData.balance || '0';
+                    document.getElementById('info-balance').textContent = userData.balance || '0.00';
+                    document.getElementById('info-email').textContent = userData.email || 'N/A';
+                    document.getElementById('info-phone').textContent = userData.mobile || 'N/A';
+                    document.getElementById('dashboard-support-pin').textContent = userData.support_pin || '0';
+                    document.getElementById('dashboard-weekly-spent').textContent = (userData.weekly_spent || '0') + '৳';
+                    document.getElementById('dashboard-total-spent').textContent = userData.total_spent || '0';
+                    document.getElementById('dashboard-total-order').textContent = userData.total_order || '0';
+                    
+                    // Update header balance display
+                    balanceDisplay.innerHTML = `<span>৳</span> ${userData.balance || '0'}`;
+
+                    // Update dropdown user info
+                    const userMenu = document.getElementById('user-menu');
+                    if (userMenu) {
+                         document.getElementById('menu-username').textContent = `Hi, ${userData.username || 'User'}`;
+                         document.getElementById('menu-email').textContent = userData.email || 'N/A';
+                    }
+                }
+            });
+        };
+
+        // Event listener for product cards
+        productGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.card');
+            if (card && card.dataset.productId) {
+                showTopupDetailsView(card.dataset.productId);
+            }
+        });
+
+        // Modal Control
+        document.getElementById('close-login-modal').addEventListener('click', () => loginModal.classList.add('hidden'));
+        document.getElementById('close-signup-modal').addEventListener('click', () => signupModal.classList.add('hidden'));
+        document.getElementById('close-add-money-modal').addEventListener('click', () => {
+            addMoneyModal.classList.add('hidden');
+            addMoneyForm.reset();
+            addMoneyError.textContent = '';
+            addMoneySuccess.textContent = '';
+            document.getElementById('payment-number').textContent = "Please select a payment method";
+        });
+        document.getElementById('show-signup').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.classList.add('hidden');
+            signupModal.classList.remove('hidden');
+        });
+        document.getElementById('show-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            signupModal.classList.add('hidden');
+            loginModal.classList.remove('hidden');
+        });
+
+        const showLoginModal = () => {
+            signupModal.classList.add('hidden');
+            loginModal.classList.remove('hidden');
+        };
+        
+        // Listener to update the header balance display on auth state change
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                loginRequiredMessage.classList.add('hidden');
+                loginModal.classList.add('hidden');
+                signupModal.classList.add('hidden');
+                addMoneyModal.classList.add('hidden');
+                showMainView();
+                
+                // Update auth container with the new avatar and menu
+                authContainer.innerHTML = `
+                    <button id="user-avatar-button" class="w-10 h-10 rounded-full bg-emerald-400 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+                        <img src="https://placehold.co/40x40/34d399/111827?text=${(user.email || 'U')[0].toUpperCase()}" alt="User Avatar">
+                    </button>
+                    <div id="user-menu" class="absolute right-0 mt-2 w-72 rounded-lg shadow-lg bg-gray-800 border border-gray-700 z-50 overflow-hidden hidden">
+                        <div class="p-4 border-b border-gray-700">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40x40/34d399/111827?text=${(user.email || 'U')[0].toUpperCase()}" alt="User Avatar" class="rounded-full w-10 h-10">
+                                <div>
+                                    <p id="menu-username" class="text-white font-bold">Hi, User</p>
+                                    <p id="menu-email" class="text-gray-400 text-xs truncate w-40">${user.email || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="py-2">
+                             <li>
+                                <a href="#" id="my-account-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" id="my-orders-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                    My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" id="my-codes-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    My Codes
+                                </a>
+                            </li>
+                             <li>
+                                <a href="#" id="my-transactions-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 3v5h5"></path></svg>
+                                    My Transaction
+                                </a>
+                            </li>
+                             <li>
+                                <a href="#" id="add-money-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line><circle cx="12" cy="12" r="10"></circle></svg>
+                                    Add Money
+                                </a>
+                            </li>
+                             <li>
+                                <a href="https://www.facebook.com/profile.php?id=61573400562507" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    Contact Us
+                                </a>
+                            </li>
+                             <li>
+                                <a href="#" id="support-link" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-emerald-400"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    Support
+                                </a>
+                            </li>
+                            <li class="px-4 py-2 border-t border-gray-700">
+                                <button id="logout-button" class="w-full text-left flex items-center px-0 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                `;
+                document.getElementById('logout-button').addEventListener('click', () => signOut(auth));
+                document.getElementById('my-account-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showUserDashboardView(user);
+                });
+                document.getElementById('my-orders-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMyOrdersView();
+                });
+                document.getElementById('my-codes-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMyCodesView();
+                });
+                document.getElementById('my-transactions-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMyTransactionsView();
+                });
+                document.getElementById('add-money-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    addMoneyModal.classList.remove('hidden');
+                });
+                document.getElementById('support-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMainView();
+                });
+                fetchUserData(user); 
+            } else {
+                hideAllViews();
+                loginRequiredMessage.classList.remove('hidden');
+                authContainer.innerHTML = `<button id="login-button" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-emerald-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </button>`;
+                document.getElementById('login-button').addEventListener('click', showLoginModal);
+                balanceDisplay.innerHTML = '<span>৳</span> 0';
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginForm['login-email'].value;
+            const password = loginForm['login-password'].value;
+            loginError.textContent = '';
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                loginForm.reset();
+            } catch (error) {
+                loginError.textContent = "Failed to login. Please check email and password.";
+            }
+        });
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = signupForm['signup-username'].value;
+            const email = signupForm['signup-email'].value;
+            const mobile = signupForm['signup-mobile'].value;
+            const password = signupForm['signup-password'].value;
+            const confirmPassword = signupForm['signup-confirm-password'].value;
+            signupError.textContent = '';
+            if (password !== confirmPassword) {
+                signupError.textContent = "Passwords do not match!";
+                return;
+            }
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await set(ref(db, 'users/' + user.uid), {
+                    username: username,
+                    email: email,
+                    mobile: mobile,
+                    balance: 0,
+                    support_pin: Math.floor(1000 + Math.random() * 9000), // Generate a random 4-digit pin
+                    weekly_spent: 0,
+                    total_spent: 0,
+                    total_order: 0
+                });
+                signupForm.reset();
+            } catch (error) {
+                signupError.textContent = "Failed to create account. " + error.message;
+            }
+        });
+        
+        // Add Money Form Logic
+        document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('payment-number').textContent = `Send money to: ${paymentNumber} (${e.target.value} Personal)`;
             });
         });
-    }
 
-    function updatePaymentNumber() {
-        document.getElementById('paymentNumber').innerText = document.getElementById('orderPaymentMethod').value === 'Bkash' ? '01767882562' : '01767882562';
-    }
-
-    function closeAdBanner() {
-        const adBanner = document.getElementById('ad-banner');
-        adBanner.classList.remove('scale-100', 'opacity-100');
-        adBanner.classList.add('scale-0', 'opacity-0');
-    }
-
-    // --- Initial Load ---
-    db.ref('meta').on('value', snap => {
-        const meta = snap.val() || {};
-        document.querySelector('#notice span').innerText = meta.notice || 'Special offers are running now! Grab yours today.';
-    });
-    
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-        loadOffers();
-        document.getElementById('ad-banner').classList.add('scale-100', 'opacity-100');
-    }, 1200);
-</script>
-
+        addMoneyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            addMoneyError.textContent = '';
+            addMoneySuccess.textContent = '';
+            const amount = addMoneyForm['add-money-amount'].value;
+            const trxId = addMoneyForm['add-money-trxid'].value;
+            const paymentMethod = addMoneyForm['payment-method'].value;
+            
+            if (!auth.currentUser) {
+                addMoneyError.textContent = "Please log in to submit a request.";
+                return;
+            }
+            
+            try {
+                const newRequestRef = push(ref(db, 'add_money_requests'));
+                await set(newRequestRef, {
+                    userId: auth.currentUser.uid,
+                    amount: amount,
+                    transactionId: trxId,
+                    paymentMethod: paymentMethod,
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
+                });
+                addMoneySuccess.textContent = "Your request has been submitted successfully. Your balance will be updated after admin approval.";
+                addMoneyForm.reset();
+                document.getElementById('payment-number').textContent = "Please select a payment method";
+            } catch (error) {
+                console.error("Error submitting add money request:", error);
+                addMoneyError.textContent = "Failed to submit request. Please try again.";
+            }
+        });
+    </script>
 </body>
 </html>
