@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primal Z - Ultimate Game Topup Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f8fafc; /* Lighter gray background */
         }
         .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
         }
@@ -23,11 +23,13 @@
         }
         .modal {
             opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.3s ease;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal.active {
             opacity: 1;
+            visibility: visible;
             transform: scale(1);
         }
         .toast {
@@ -39,185 +41,240 @@
             color: white;
             font-weight: 600;
             z-index: 1000;
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .toast.show {
             transform: translateX(0);
         }
-        .toast.success {
-            background-color: #10b981;
-        }
-        .toast.error {
-            background-color: #ef4444;
-        }
-        .toast.info {
-            background-color: #3b82f6;
+        .toast.success { background-color: #10b981; }
+        .toast.error { background-color: #ef4444; }
+        .toast.info { background-color: #3b82f6; }
+        .form-input {
+             @apply w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200;
         }
     </style>
 </head>
-<body>
+<body class="text-slate-800">
 
-<nav class="bg-white shadow-md sticky top-0 z-40">
-    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <a href="#" class="text-3xl font-bold text-gray-800">Primal Z</a>
-        <div class="flex items-center space-x-4">
-            <div id="auth-buttons">
-                <button onclick="openModal('loginModal')" class="hidden md:inline-block text-gray-600 font-semibold hover:text-indigo-600 transition">Login</button>
-                <button onclick="openModal('signupModal')" class="bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-700 transition">Signup</button>
-            </div>
-            <div id="user-info" class="hidden items-center space-x-4">
-                <span id="user-name" class="font-semibold text-gray-700"></span>
-                <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="text-gray-600 font-semibold hover:text-indigo-600 transition">My Orders</button>
-                <button onclick="auth.signOut()" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition">Logout</button>
+<nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <a href="#" class="flex items-center space-x-2 text-3xl font-extrabold text-slate-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
+                <span>Primal Z</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <div id="auth-buttons" class="flex items-center space-x-2">
+                    <button onclick="openModal('loginModal')" class="hidden md:inline-block font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-4 py-2">Login</button>
+                    <button onclick="openModal('signupModal')" class="bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
+                </div>
+                <div id="user-info" class="hidden items-center space-x-4">
+                    <span class="font-semibold text-slate-700 hidden md:block">Welcome, <span id="user-name"></span></span>
+                    <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="font-semibold text-slate-600 hover:text-indigo-600 transition-colors">My Orders</button>
+                    <button onclick="auth.signOut()" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition-all duration-300">Logout</button>
+                </div>
             </div>
         </div>
     </div>
 </nav>
 
-<div class="container mx-auto px-4 mt-8">
-    <div id="banner" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 md:p-12 rounded-2xl text-center mb-6">
-        <h2 class="text-4xl font-bold">Welcome to Primal Z</h2>
-        <p class="mt-4 text-lg">Get your game credits instantly with the fastest delivery system</p>
-    </div>
-    
-    <!-- Features Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
-            <div class="bg-indigo-100 p-3 rounded-full mr-4">
-                <i class="fas fa-bolt text-indigo-600 text-xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg">Instant Delivery</h3>
-                <p class="text-gray-600">Get your credits within minutes</p>
-            </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
-            <div class="bg-green-100 p-3 rounded-full mr-4">
-                <i class="fas fa-shield-alt text-green-600 text-xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg">Secure Payment</h3>
-                <p class="text-gray-600">100% safe and secure transactions</p>
-            </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
-            <div class="bg-purple-100 p-3 rounded-full mr-4">
-                <i class="fas fa-headset text-purple-600 text-xl"></i>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg">24/7 Support</h3>
-                <p class="text-gray-600">Round the clock customer service</p>
-            </div>
+<main>
+    <div id="banner" class="relative text-white pt-24 pb-32 text-center">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop');"></div>
+        <div class="absolute inset-0 bg-slate-900/70 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+        <div class="container mx-auto px-4 relative">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">Welcome to Primal Z</h1>
+            <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-slate-300">Get your game credits instantly with the fastest & most reliable delivery system.</p>
+            <a href="#offers" class="mt-8 inline-block bg-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300">
+                Browse Offers <i class="fas fa-arrow-down ml-2"></i>
+            </a>
         </div>
     </div>
     
-    <div id="notice" class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold">
-        Loading Notice...
-    </div>
+    <div class="container mx-auto px-4 -mt-16 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
+                <div class="bg-indigo-100 p-4 rounded-full">
+                    <i class="fas fa-bolt text-indigo-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">Instant Delivery</h3>
+                    <p class="text-slate-600">Your credits delivered in minutes.</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
+                <div class="bg-green-100 p-4 rounded-full">
+                    <i class="fas fa-shield-alt text-green-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">Secure Payments</h3>
+                    <p class="text-slate-600">100% safe & secure transactions.</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
+                <div class="bg-purple-100 p-4 rounded-full">
+                    <i class="fas fa-headset text-purple-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">24/7 Support</h3>
+                    <p class="text-slate-600">Always here to help you out.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div id="notice" class="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
+            <i class="fas fa-bell animate-pulse"></i>
+            <span>Loading Notice...</span>
+        </div>
 
-    <div class="flex flex-col md:flex-row gap-4 mb-8">
-        <input type="text" id="searchInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition" placeholder="Search for offers..." oninput="renderOffers()">
-        <select id="categoryFilter" class="w-full md:w-1/3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition" onchange="renderOffers()">
-            <option value="">All Categories</option>
-        </select>
-    </div>
+        <div id="offers" class="bg-white p-4 rounded-xl shadow-md border border-slate-100 flex flex-col md:flex-row gap-4 mb-8">
+            <div class="relative flex-grow">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" class="w-full p-3 pl-12 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition-all duration-200" placeholder="Search for games or offers..." oninput="renderOffers()">
+            </div>
+            <select id="categoryFilter" class="w-full md:w-1/3 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition-all duration-200" onchange="renderOffers()">
+                <option value="">All Categories</option>
+            </select>
+        </div>
 
-    <div id="offersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Skeleton loading cards -->
-        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
-        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
-        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
-        <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+        <div id="offersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+            <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+            <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+            <div class="skeleton bg-white rounded-2xl shadow-lg overflow-hidden h-80"></div>
+        </div>
     </div>
-</div>
+</main>
 
-<a href="https://t.me/YourSupportBot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:scale-105 transition-transform">
-    Live Support
+<a href="https://t.me/YourSupportBot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
+    <i class="fas fa-headset"></i>
+    <span class="hidden sm:inline">Live Support</span>
 </a>
 
-<footer class="bg-white mt-12 py-8">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-4 md:mb-0">
-                <h3 class="text-2xl font-bold text-gray-800">GET SOCIAL SERVICE </h3>
-                <p class="text-gray-600 mt-2">VISIT YOUR FACEBOOK PAGE</p>
+<footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="container mx-auto px-4 pt-16 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="md:col-span-1">
+                <h3 class="text-2xl font-bold text-white mb-4">Primal Z</h3>
+                <p>Your one-stop solution for instant game top-ups. We provide fast, secure, and reliable service for gamers everywhere.</p>
             </div>
-            <div class="flex space-x-4">
-                <a href="https://fastsmm-panel.vercel.app/" target="_blank" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition">
-                    <i class="fab fa-facebook-f"></i>
+            <div>
+                 <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                 <ul class="space-y-2">
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Home</a></li>
+                     <li><a href="#offers" class="hover:text-indigo-400 transition-colors">All Offers</a></li>
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">About Us</a></li>
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Contact Support</a></li>
+                 </ul>
+            </div>
+            <div>
+                 <h4 class="text-lg font-semibold text-white mb-4">Legal</h4>
+                 <ul class="space-y-2">
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Terms of Service</a></li>
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
+                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Refund Policy</a></li>
+                 </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Partner Services</h4>
+                <p class="mb-4">Visit our partner SMM panel for social media services.</p>
+                <a href="https://fastsmm-panel.vercel.app/" target="_blank" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center space-x-2 w-fit">
+                    <i class="fas fa-globe"></i>
+                    <span>Visit SMM Panel</span>
                 </a>
             </div>
         </div>
-        <div class="border-t border-gray-200 mt-6 pt-6 text-center text-gray-500">
-            &copy; 2025 Primal Z. All Rights Reserved.
+        <div class="border-t border-slate-700 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
+            <div class="text-center sm:text-left mb-4 sm:mb-0">
+                &copy; 2025 Primal Z. All Rights Reserved.
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-youtube text-xl"></i></a>
+            </div>
         </div>
     </div>
 </footer>
-
-<!-- Modals -->
-<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <span onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
-        <h2 class="text-2xl font-bold mb-6">Login to Your Account</h2>
-        <input type="email" id="loginEmail" placeholder="Email" class="w-full p-3 mb-4 border rounded-lg">
-        <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 mb-4 border rounded-lg">
-        <button onclick="login()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Login</button>
+<div id="modals-container">
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
+            <input type="email" id="loginEmail" placeholder="Email Address" class="form-input mb-4">
+            <input type="password" id="loginPassword" placeholder="Password" class="form-input mb-6">
+            <button onclick="login()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Login</button>
+        </div>
     </div>
-</div>
 
-<div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <span onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
-        <h2 class="text-2xl font-bold mb-6">Create a New Account</h2>
-        <input type="text" id="signupUsername" placeholder="Username" class="w-full p-3 mb-4 border rounded-lg">
-        <input type="email" id="signupEmail" placeholder="Email" class="w-full p-3 mb-4 border rounded-lg">
-        <input type="password" id="signupPassword" placeholder="Password" class="w-full p-3 mb-4 border rounded-lg">
-        <button onclick="signup()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Create Account</button>
+    <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-center">Create a New Account</h2>
+            <input type="text" id="signupUsername" placeholder="Username" class="form-input mb-4">
+            <input type="email" id="signupEmail" placeholder="Email Address" class="form-input mb-4">
+            <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" class="form-input mb-6">
+            <button onclick="signup()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Create Account</button>
+        </div>
     </div>
-</div>
 
-<div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <span onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
-        <h2 class="text-2xl font-bold mb-4">Place Order</h2>
-        <p id="orderOfferTitle" class="text-xl font-semibold text-gray-800"></p>
-        <p class="my-2">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
-        <input type="text" id="orderGameId" placeholder="Your Game UID/ID" class="w-full p-3 my-4 border rounded-lg">
-        <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="w-full p-3 mb-4 border rounded-lg">
-            <option value="Bkash">Bkash</option>
-            <option value="Nagad">Nagad</option>
-        </select>
-        <p class="mb-4">Send Payment to: <strong id="paymentNumber" class="text-red-500">01767882562</strong></p>
-        <label class="block mb-2 font-semibold">Payment Screenshot:</label>
-        <input type="file" id="paymentProof" class="w-full border rounded-lg p-2">
-        <button onclick="placeOrder()" class="w-full mt-6 bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Submit Order</button>
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg relative">
+            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-4">Place Your Order</h2>
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
+                <p id="orderOfferTitle" class="text-xl font-semibold text-slate-800"></p>
+                <p class="mt-1">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="orderGameId" placeholder="Your Game UID / ID" class="form-input">
+                <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="form-input">
+                    <option value="Bkash">Bkash</option>
+                    <option value="Nagad">Nagad</option>
+                </select>
+                <div class="bg-red-50 text-center p-3 rounded-lg border border-red-200">
+                    <p class="text-sm text-red-700">Send Payment to:</p>
+                    <strong id="paymentNumber" class="text-red-600 text-lg tracking-wider">01767882562</strong>
+                </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-slate-700">Payment Screenshot:</label>
+                    <input type="file" id="paymentProof" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+            </div>
+            <button onclick="placeOrder()" class="w-full mt-6 bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Submit Order</button>
+        </div>
     </div>
-</div>
 
-<div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden modal">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative">
-        <span onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800 cursor-pointer">&times;</span>
-        <h2 class="text-2xl font-bold mb-6">My Orders</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-gray-100">
-                    <tr><th class="p-3">Offer</th><th class="p-3">Price</th><th class="p-3">Game UID</th><th class="p-3">Status</th></tr>
-                </thead>
-                <tbody id="myOrdersBody"></tbody>
-            </table>
+    <div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
+            <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-6">My Order History</h2>
+            <div class="overflow-x-auto max-h-[60vh]">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-100 sticky top-0">
+                        <tr>
+                            <th class="p-3 font-semibold text-sm">Offer</th>
+                            <th class="p-3 font-semibold text-sm">Price</th>
+                            <th class="p-3 font-semibold text-sm">Game UID</th>
+                            <th class="p-3 font-semibold text-sm">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myOrdersBody" class="divide-y divide-slate-200"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div id="toast" class="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-    // Firebase Config
+    // Firebase Config - REMAINS UNCHANGED
     const firebaseConfig = { 
         apiKey: "AIzaSyDtq1vLVZ9D3CBis6FFSpt8psERGyTG6YM", 
         authDomain: "gen-z-airdrop.firebaseapp.com", 
@@ -237,15 +294,11 @@
 
     // --- Modal Functions ---
     function openModal(modalId) { 
-        const modal = document.getElementById(modalId);
-        modal.classList.remove('hidden');
-        setTimeout(() => modal.classList.add('active'), 10);
+        document.getElementById(modalId).classList.add('active');
     }
     
     function closeModal(modalId) { 
-        const modal = document.getElementById(modalId);
-        modal.classList.remove('active');
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        document.getElementById(modalId).classList.remove('active');
     }
 
     // --- Toast Notification ---
@@ -253,7 +306,6 @@
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.className = `toast ${type} show`;
-        
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
@@ -268,7 +320,6 @@
             userInfo.classList.remove('hidden');
             userInfo.classList.add('flex');
             document.getElementById('user-name').innerText = user.displayName || user.email;
-            showToast(`Welcome back, ${user.displayName || user.email}!`, 'success');
         } else {
             authButtons.classList.remove('hidden');
             userInfo.classList.add('hidden');
@@ -280,43 +331,30 @@
     function login() {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
-        
-        if (!email || !pass) {
-            showToast('Please fill in all fields', 'error');
-            return;
-        }
+        if (!email || !pass) return showToast('Please fill in all fields', 'error');
         
         auth.signInWithEmailAndPassword(email, pass)
-            .then(() => {
+            .then((userCredential) => {
                 closeModal('loginModal');
-                showToast('Login successful!', 'success');
+                showToast(`Welcome back, ${userCredential.user.displayName || userCredential.user.email}!`, 'success');
             })
-            .catch(e => {
-                showToast(`Login failed: ${e.message}`, 'error');
-            });
+            .catch(e => showToast(`Login failed: ${e.message}`, 'error'));
     }
     
     function signup() {
         const username = document.getElementById('signupUsername').value;
         const email = document.getElementById('signupEmail').value;
         const pass = document.getElementById('signupPassword').value;
-        
-        if (!username.trim() || !email || !pass) {
-            showToast('Please fill in all fields', 'error');
-            return;
-        }
+        if (!username.trim() || !email || !pass) return showToast('Please fill in all fields', 'error');
         
         auth.createUserWithEmailAndPassword(email, pass)
             .then(cred => {
                 cred.user.updateProfile({ displayName: username });
-                // Save user data to Realtime Database
                 db.ref('users/' + cred.user.uid).set({ username, email, banned: false });
                 closeModal('signupModal');
                 showToast('Account created successfully!', 'success');
             })
-            .catch(e => {
-                showToast(`Signup failed: ${e.message}`, 'error');
-            });
+            .catch(e => showToast(`Signup failed: ${e.message}`, 'error'));
     }
 
     // --- Load and Render Offers ---
@@ -333,44 +371,36 @@
         const search = document.getElementById('searchInput').value.toLowerCase();
         const category = document.getElementById('categoryFilter').value;
         
-        // Clear loading skeletons
         grid.innerHTML = '';
         
-        // If no offers available
         if (Object.keys(offersData).length === 0) {
-            grid.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <i class="fas fa-gamepad text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-600">No offers available at the moment</h3>
-                    <p class="text-gray-500">Please check back later for new offers</p>
-                </div>
-            `;
+            grid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-gamepad text-6xl text-slate-300 mb-4"></i><h3 class="text-xl font-semibold text-slate-600">No offers available right now</h3><p class="text-slate-500">Please check back later for new deals.</p></div>`;
             return;
         }
         
         let hasResults = false;
-        
         Object.keys(offersData).forEach(key => {
             const o = offersData[key];
             if ((search && !o.title.toLowerCase().includes(search)) || (category && o.category !== category)) return;
             
             hasResults = true;
             const card = document.createElement('div');
-            card.className = 'bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 flex flex-col';
+            // UPDATED SMALLER CARD HTML
+            card.className = 'bg-white rounded-2xl shadow-md hover:shadow-xl border border-slate-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col group';
             card.innerHTML = `
-                <div class="relative">
-                    <img src="${o.image}" alt="${o.title}" class="w-full h-48 object-cover">
-                    ${o.discount ? `<span class="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-bold">${o.discount}% OFF</span>` : ''}
+                <div class="relative overflow-hidden">
+                    <img src="${o.image}" alt="${o.title}" class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300">
+                    ${o.discount ? `<span class="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">${o.discount}% OFF</span>` : ''}
                 </div>
-                <div class="p-5 flex flex-col flex-grow">
-                    <h3 class="text-xl font-bold text-gray-800">${o.title}</h3>
-                    <p class="text-gray-500 text-sm mt-2 flex-grow">${o.description}</p>
-                    <div class="mt-4 flex justify-between items-center">
+                <div class="p-4 flex flex-col flex-grow">
+                    <h3 class="text-lg font-bold text-slate-800 leading-tight">${o.title}</h3>
+                    <p class="text-slate-500 text-xs mt-2 flex-grow">${o.description}</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex justify-between items-center">
                         <div>
-                            ${o.originalPrice ? `<span class="text-sm text-gray-500 line-through">${o.originalPrice} TK</span>` : ''}
-                            <span class="text-2xl font-bold text-indigo-600">${o.price} TK</span>
+                            ${o.originalPrice ? `<span class="text-sm text-slate-400 line-through">${o.originalPrice} TK</span>` : ''}
+                            <span class="block text-xl font-bold text-indigo-600">${o.price} TK</span>
                         </div>
-                        <button onclick="showOrderModal('${key}')" class="bg-indigo-100 text-indigo-600 font-semibold py-2 px-4 rounded-lg hover:bg-indigo-200 transition">Order</button>
+                        <button onclick="showOrderModal('${key}')" class="bg-indigo-100 text-indigo-600 font-semibold py-2 px-4 rounded-lg hover:bg-indigo-200 transition-colors">Order Now</button>
                     </div>
                 </div>
             `;
@@ -378,13 +408,7 @@
         });
         
         if (!hasResults) {
-            grid.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-600">No matching offers found</h3>
-                    <p class="text-gray-500">Try adjusting your search or filter criteria</p>
-                </div>
-            `;
+            grid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-search text-6xl text-slate-300 mb-4"></i><h3 class="text-xl font-semibold text-slate-600">No matching offers found</h3><p class="text-slate-500">Try adjusting your search or filter.</p></div>`;
         }
     }
 
@@ -399,8 +423,7 @@
     function showOrderModal(key) {
         if (!auth.currentUser) {
             showToast('Please login to place an order', 'error');
-            openModal('loginModal');
-            return;
+            return openModal('loginModal');
         }
         selectedOfferKey = key;
         const offer = offersData[key];
@@ -415,11 +438,7 @@
         
         const offer = offersData[selectedOfferKey];
         const gameId = document.getElementById('orderGameId').value;
-        
-        if (!gameId) {
-            showToast('Please enter your Game UID', 'error');
-            return;
-        }
+        if (!gameId) return showToast('Please enter your Game UID', 'error');
         
         let proofUrl = '';
         const proofFile = document.getElementById('paymentProof').files[0];
@@ -438,17 +457,7 @@
             }
         }
         
-        const order = { 
-            uid: user.uid, 
-            username: user.displayName, 
-            offerId: offer.title, 
-            price: offer.price, 
-            gameId, 
-            paymentMethod: document.getElementById('orderPaymentMethod').value, 
-            proofUrl, 
-            status: 'pending', 
-            timestamp: Date.now() 
-        };
+        const order = { uid: user.uid, username: user.displayName, offerId: offer.title, price: offer.price, gameId, paymentMethod: document.getElementById('orderPaymentMethod').value, proofUrl, status: 'pending', timestamp: Date.now() };
         
         await db.ref('orders').push(order);
         showToast('Order placed successfully!', 'success');
@@ -465,14 +474,7 @@
             const orders = snap.val() || {};
             
             if (Object.keys(orders).length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="text-center p-6 text-gray-500">
-                            <i class="fas fa-shopping-cart text-4xl mb-2"></i>
-                            <p>You haven't placed any orders yet</p>
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-slate-500"><i class="fas fa-shopping-cart text-4xl mb-3"></i><p>You haven't placed any orders yet.</p></td></tr>`;
                 return;
             }
             
@@ -482,8 +484,8 @@
                     completed: 'bg-green-100 text-green-800',
                     cancelled: 'bg-red-100 text-red-800'
                 };
-                const statusClass = statusClasses[o.status] || 'bg-gray-100 text-gray-800';
-                tbody.innerHTML += `<tr class="border-b hover:bg-gray-50"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} TK</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-sm font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
+                const statusClass = statusClasses[o.status] || 'bg-slate-100 text-slate-800';
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} TK</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
             });
         });
     }
@@ -495,16 +497,15 @@
     // --- Initial Load ---
     db.ref('meta').on('value', snap => {
         const meta = snap.val() || {};
-        document.querySelector('#banner h2').innerText = meta.banner || 'Get Your Game Credits Instantly';
-        document.getElementById('notice').innerText = meta.notice || 'Special offers are running now! Grab yours today.';
+        document.querySelector('#banner h1').innerText = meta.banner || 'Welcome to Primal Z';
+        document.querySelector('#notice span').innerText = meta.notice || 'Special offers are running now! Grab yours today.';
     });
     
     // Simulate loading delay for better UX
     setTimeout(() => {
         loadOffers();
-    }, 1000);
+    }, 1200);
 </script>
 
 </body>
-</html>
 </html>
