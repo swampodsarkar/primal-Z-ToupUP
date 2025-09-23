@@ -58,12 +58,17 @@
 </head>
 <body class="text-slate-200">
 
-<div id="ad-banner" class="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-sm sm:max-w-md p-4 bg-gradient-to-r from-green-600 to-cyan-600 text-white rounded-lg shadow-xl z-50 flex items-center justify-between transition-all duration-500 transform scale-0 opacity-0">
+<div id="ad-banner" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm sm:max-w-md p-4 bg-gradient-to-r from-green-600 to-cyan-600 text-white rounded-xl shadow-xl z-50 flex items-center justify-between transition-all duration-500 transform scale-0 opacity-0">
     <a href="https://t.me/+zk0LEH8ftIw0ZDY9" target="_blank" class="flex items-center space-x-3 flex-grow">
         <i class="fab fa-telegram-plane text-2xl"></i>
         <span class="text-sm sm:text-base font-semibold">আমাদের টেলিগ্রাম চ্যানেল জয়েন করতে এখানে ক্লিক করুন</span>
     </a>
     <button onclick="closeAdBanner()" class="ml-4 text-2xl font-bold hover:text-gray-200 transition-colors">&times;</button>
+</div>
+
+<div id="notice" class="bg-gradient-to-r from-green-500 to-cyan-500 text-white p-3 text-center font-semibold shadow-md flex items-center justify-center space-x-3 z-30">
+    <i class="fas fa-bell animate-pulse"></i>
+    <span class="text-sm">Loading Notice...</span>
 </div>
 
 <nav class="bg-gray-900/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
@@ -88,55 +93,29 @@
     </div>
 </nav>
 
-<main>
-    <div id="banner" class="relative text-white pt-24 pb-32 text-center">
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop');"></div>
-        <div class="absolute inset-0 bg-black/70 bg-gradient-to-t from-black/80 to-transparent"></div>
-        <div class="container mx-auto px-4 relative">
-            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">Welcome to Primal Z</h1>
-            <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-300">Get your game credits instantly with the fastest & most reliable delivery system.</p>
-            <a href="#offers" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 hover:scale-105 transition-all duration-300">
-                Browse Offers <i class="fas fa-arrow-down ml-2"></i>
-            </a>
+<section class="bg-slate-900 py-8 px-4">
+    <div class="container mx-auto max-w-4xl">
+        <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-700 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+            <div class="text-center md:text-left">
+                <h2 class="text-2xl font-extrabold text-white leading-tight">Instant Digital Top-Ups</h2>
+                <p class="mt-2 text-sm text-gray-400 max-w-md mx-auto md:mx-0">Need help? Reach out to our dedicated support team.</p>
+            </div>
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                <a href="https://wa.me/8801767882562" target="_blank" class="flex items-center justify-center space-x-2 px-5 py-2.5 bg-green-500 text-white font-semibold rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300 w-full sm:w-auto text-sm">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="https://t.me/PrimalZbd" target="_blank" class="flex items-center justify-center space-x-2 px-5 py-2.5 bg-blue-500 text-white font-semibold rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-300 w-full sm:w-auto text-sm">
+                    <i class="fab fa-telegram-plane text-lg"></i>
+                    <span>Telegram</span>
+                </a>
+            </div>
         </div>
     </div>
-    
-    <div class="container mx-auto px-4 -mt-16 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
-                <div class="bg-green-700/30 p-4 rounded-full">
-                    <i class="fas fa-bolt text-green-400 text-2xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg text-white">Instant Delivery</h3>
-                    <p class="text-gray-400">Your credits delivered in minutes.</p>
-                </div>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
-                <div class="bg-cyan-700/30 p-4 rounded-full">
-                    <i class="fas fa-shield-alt text-cyan-400 text-2xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg text-white">Secure Payments</h3>
-                    <p class="text-gray-400">100% safe & secure transactions.</p>
-                </div>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
-                <div class="bg-purple-700/30 p-4 rounded-full">
-                    <i class="fas fa-headset text-purple-400 text-2xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg text-white">24/7 Support</h3>
-                    <p class="text-gray-400">Always here to help you out.</p>
-                </div>
-            </div>
-        </div>
-    
-        <div id="notice" class="bg-gradient-to-r from-green-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
-            <i class="fas fa-bell animate-pulse"></i>
-            <span>Loading Notice...</span>
-        </div>
+</section>
 
+<main>
+    <div class="container mx-auto px-4 relative z-10">
         <div id="offers" class="mb-8">
             <div class="bg-gray-800 p-4 rounded-xl shadow-md border border-gray-700 mb-6">
                 <h3 class="text-xl font-bold mb-4">Choose a Category</h3>
@@ -150,6 +129,38 @@
         </div>
     </div>
 </main>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="bg-green-700/30 p-4 rounded-full">
+                <i class="fas fa-bolt text-green-400 text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-white">Instant Delivery</h3>
+                <p class="text-gray-400">Your credits delivered in minutes.</p>
+            </div>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="bg-cyan-700/30 p-4 rounded-full">
+                <i class="fas fa-shield-alt text-cyan-400 text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-white">Secure Payments</h3>
+                <p class="text-gray-400">100% safe & secure transactions.</p>
+            </div>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+            <div class="bg-purple-700/30 p-4 rounded-full">
+                <i class="fas fa-headset text-purple-400 text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-white">24/7 Support</h3>
+                <p class="text-gray-400">Always here to help you out.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-cyan-500 text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
     <i class="fas fa-headset"></i>
@@ -543,7 +554,6 @@
     // --- Initial Load ---
     db.ref('meta').on('value', snap => {
         const meta = snap.val() || {};
-        document.querySelector('#banner h1').innerText = meta.banner || 'Welcome to Primal Z';
         document.querySelector('#notice span').innerText = meta.notice || 'Special offers are running now! Grab yours today.';
     });
     
