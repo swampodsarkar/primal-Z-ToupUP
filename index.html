@@ -10,10 +10,11 @@
     <style>
         body {
             font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
-            background-color: #f8fafc;
+            background-color: #1a202c; /* Dark slate background */
+            color: #e2e8f0; /* Lighter text color */
         }
         .skeleton {
-            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
         }
@@ -51,27 +52,27 @@
         .toast.error { background-color: #ef4444; }
         .toast.info { background-color: #3b82f6; }
         .form-input {
-             @apply w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200;
+             @apply w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200;
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-200">
 
-<nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+<nav class="bg-gray-900/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
-            <a href="#" class="flex items-center space-x-2 text-3xl font-extrabold text-slate-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
+            <a href="#" class="flex items-center space-x-2 text-3xl font-extrabold text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" /></svg>
                 <span>Primal Z</span>
             </a>
             <div class="flex items-center space-x-4">
                 <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button onclick="openModal('loginModal')" class="hidden md:inline-block font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-4 py-2">Login</button>
-                    <button onclick="openModal('signupModal')" class="bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
+                    <button onclick="openModal('loginModal')" class="hidden md:inline-block font-semibold text-gray-300 hover:text-green-500 transition-colors px-4 py-2">Login</button>
+                    <button onclick="openModal('signupModal')" class="bg-green-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg">Signup</button>
                 </div>
                 <div id="user-info" class="hidden items-center space-x-4">
-                    <span class="font-semibold text-slate-700 hidden md:block">Welcome, <span id="user-name"></span></span>
-                    <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="font-semibold text-slate-600 hover:text-indigo-600 transition-colors">My Orders</button>
+                    <span class="font-semibold text-gray-300 hidden md:block">Welcome, <span id="user-name"></span></span>
+                    <button onclick="openModal('myOrdersModal'); loadMyOrders();" class="font-semibold text-gray-300 hover:text-green-500 transition-colors">My Orders</button>
                     <button onclick="auth.signOut()" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-600 transition-all duration-300">Logout</button>
                 </div>
             </div>
@@ -82,11 +83,11 @@
 <main>
     <div id="banner" class="relative text-white pt-24 pb-32 text-center">
         <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop');"></div>
-        <div class="absolute inset-0 bg-slate-900/70 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-black/70 bg-gradient-to-t from-black/80 to-transparent"></div>
         <div class="container mx-auto px-4 relative">
             <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">Welcome to Primal Z</h1>
-            <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-slate-300">Get your game credits instantly with the fastest & most reliable delivery system.</p>
-            <a href="#offers" class="mt-8 inline-block bg-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300">
+            <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-300">Get your game credits instantly with the fastest & most reliable delivery system.</p>
+            <a href="#offers" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 hover:scale-105 transition-all duration-300">
                 Browse Offers <i class="fas fa-arrow-down ml-2"></i>
             </a>
         </div>
@@ -94,60 +95,60 @@
     
     <div class="container mx-auto px-4 -mt-16 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
-                <div class="bg-indigo-100 p-4 rounded-full">
-                    <i class="fas fa-bolt text-indigo-600 text-2xl"></i>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+                <div class="bg-green-700/30 p-4 rounded-full">
+                    <i class="fas fa-bolt text-green-400 text-2xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg text-slate-800">Instant Delivery</h3>
-                    <p class="text-slate-600">Your credits delivered in minutes.</p>
+                    <h3 class="font-bold text-lg text-white">Instant Delivery</h3>
+                    <p class="text-gray-400">Your credits delivered in minutes.</p>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
-                <div class="bg-green-100 p-4 rounded-full">
-                    <i class="fas fa-shield-alt text-green-600 text-2xl"></i>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+                <div class="bg-cyan-700/30 p-4 rounded-full">
+                    <i class="fas fa-shield-alt text-cyan-400 text-2xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg text-slate-800">Secure Payments</h3>
-                    <p class="text-slate-600">100% safe & secure transactions.</p>
+                    <h3 class="font-bold text-lg text-white">Secure Payments</h3>
+                    <p class="text-gray-400">100% safe & secure transactions.</p>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 flex items-center space-x-4">
-                <div class="bg-purple-100 p-4 rounded-full">
-                    <i class="fas fa-headset text-purple-600 text-2xl"></i>
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex items-center space-x-4">
+                <div class="bg-purple-700/30 p-4 rounded-full">
+                    <i class="fas fa-headset text-purple-400 text-2xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg text-slate-800">24/7 Support</h3>
-                    <p class="text-slate-600">Always here to help you out.</p>
+                    <h3 class="font-bold text-lg text-white">24/7 Support</h3>
+                    <p class="text-gray-400">Always here to help you out.</p>
                 </div>
             </div>
         </div>
     
-        <div id="notice" class="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
+        <div id="notice" class="bg-gradient-to-r from-green-500 to-cyan-500 text-white p-4 rounded-xl text-center mb-8 font-semibold shadow-md flex items-center justify-center space-x-3">
             <i class="fas fa-bell animate-pulse"></i>
             <span>Loading Notice...</span>
         </div>
 
         <div id="offers" class="mb-8">
-            <div class="bg-white p-4 rounded-xl shadow-md border border-slate-100 mb-6">
+            <div class="bg-gray-800 p-4 rounded-xl shadow-md border border-gray-700 mb-6">
                 <h3 class="text-xl font-bold mb-4">Choose a Category</h3>
                 <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    <div class="skeleton bg-white rounded-xl h-24"></div>
-                    <div class="skeleton bg-white rounded-xl h-24"></div>
-                    <div class="skeleton bg-white rounded-xl h-24"></div>
-                    <div class="skeleton bg-white rounded-xl h-24"></div>
+                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
+                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
+                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
+                    <div class="skeleton bg-gray-800 rounded-xl h-24"></div>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
-<a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
+<a href="https://t.me/PrimalZ_bot" target="_blank" class="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-cyan-500 text-white font-bold py-3 px-5 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center space-x-2">
     <i class="fas fa-headset"></i>
     <span class="hidden sm:inline">Live Support</span>
 </a>
 
-<footer class="bg-slate-900 text-slate-400 mt-20">
+<footer class="bg-gray-900 text-gray-400 mt-20">
     <div class="container mx-auto px-4 pt-16 pb-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div class="md:col-span-1">
@@ -157,18 +158,18 @@
             <div>
                  <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
                  <ul class="space-y-2">
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Home</a></li>
-                     <li><a href="#offers" class="hover:text-indigo-400 transition-colors">All Offers</a></li>
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">About Us</a></li>
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Contact Support</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">Home</a></li>
+                     <li><a href="#offers" class="hover:text-green-400 transition-colors">All Offers</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">About Us</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">Contact Support</a></li>
                  </ul>
             </div>
             <div>
                  <h4 class="text-lg font-semibold text-white mb-4">Legal</h4>
                  <ul class="space-y-2">
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Terms of Service</a></li>
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
-                     <li><a href="#" class="hover:text-indigo-400 transition-colors">Refund Policy</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">Terms of Service</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">Privacy Policy</a></li>
+                     <li><a href="#" class="hover:text-green-400 transition-colors">Refund Policy</a></li>
                  </ul>
             </div>
             <div>
@@ -180,15 +181,15 @@
                 </a>
             </div>
         </div>
-        <div class="border-t border-slate-700 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
+        <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
             <div class="text-center sm:text-left mb-4 sm:mb-0">
                 &copy; 2025 Primal Z. All Rights Reserved.
             </div>
             <div class="flex space-x-4">
-                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fab fa-youtube text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-youtube text-xl"></i></a>
             </div>
         </div>
     </div>
@@ -197,54 +198,54 @@
 
 <div id="modals-container">
     <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
             <h2 class="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
             <input type="email" id="loginEmail" placeholder="Email Address" class="form-input mb-4">
             <input type="password" id="loginPassword" placeholder="Password" class="form-input mb-6">
-            <button onclick="login()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Login</button>
+            <button onclick="login()" class="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300">Login</button>
         </div>
     </div>
 
     <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-            <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
             <h2 class="text-2xl font-bold mb-6 text-center">Create a New Account</h2>
             <input type="text" id="signupUsername" placeholder="Username" class="form-input mb-4">
             <input type="email" id="signupEmail" placeholder="Email Address" class="form-input mb-4">
             <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" class="form-input mb-6">
-            <button onclick="signup()" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300">Create Account</button>
+            <button onclick="signup()" class="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300">Create Account</button>
         </div>
     </div>
 
     <div id="offersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative">
-            <button onclick="closeModal('offersModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
-            <h2 id="offersModalTitle" class="text-2xl font-bold mb-6 text-center pb-4 border-b border-slate-200"></h2>
+        <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative">
+            <button onclick="closeModal('offersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
+            <h2 id="offersModalTitle" class="text-2xl font-bold mb-6 text-center pb-4 border-b border-gray-700"></h2>
             <div id="offersGridModal" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto flex-grow">
                 </div>
         </div>
     </div>
 
     <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
-            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-3xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-4 border-b border-slate-200">
+        <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-2xl relative">
+            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-white transition-colors">&times;</button>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-4 border-b border-gray-700">
                 <h2 class="text-2xl font-bold mb-2 sm:mb-0">Place Your Order</h2>
                 <div class="text-left sm:text-right">
-                    <p id="orderOfferTitle" class="text-lg font-semibold text-slate-800"></p>
-                    <p class="mt-1">Price: <span id="orderPrice" class="text-indigo-600 font-bold text-2xl"></span></p>
+                    <p id="orderOfferTitle" class="text-lg font-semibold text-white"></p>
+                    <p class="mt-1">Price: <span id="orderPrice" class="text-green-500 font-bold text-2xl"></span></p>
                 </div>
             </div>
             
             <div class="space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                        <label for="orderGameId" class="block mb-2 font-semibold text-slate-700">Your Game UID / ID</label>
+                        <label for="orderGameId" class="block mb-2 font-semibold text-gray-400">Your Game UID / ID</label>
                         <input type="text" id="orderGameId" placeholder="e.g., 123456789" class="form-input">
                     </div>
                     <div>
-                        <label for="orderPaymentMethod" class="block mb-2 font-semibold text-slate-700">Payment Method</label>
+                        <label for="orderPaymentMethod" class="block mb-2 font-semibold text-gray-400">Payment Method</label>
                         <select id="orderPaymentMethod" onchange="updatePaymentNumber()" class="form-input">
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
@@ -253,32 +254,32 @@
                 </div>
                 
                 <div>
-                    <p class="block mb-2 font-semibold text-slate-700">Payment Instructions</p>
-                    <div class="bg-slate-100 p-4 rounded-lg border border-slate-200 flex items-center justify-between">
+                    <p class="block mb-2 font-semibold text-gray-400">Payment Instructions</p>
+                    <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-slate-600">Send total amount to this number:</p>
-                            <strong id="paymentNumber" class="text-indigo-600 text-xl tracking-wider">01767882562</strong>
+                            <p class="text-sm text-gray-400">Send total amount to this number:</p>
+                            <strong id="paymentNumber" class="text-green-500 text-xl tracking-wider">01767882562</strong>
                         </div>
-                        <i class="fas fa-copy text-slate-400 text-lg"></i>
+                        <i class="fas fa-copy text-gray-400 text-lg"></i>
                     </div>
                 </div>
 
                 <div>
-                    <label for="paymentProof" class="block mb-2 font-semibold text-slate-700">Payment Screenshot</label>
-                    <input type="file" id="paymentProof" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors cursor-pointer">
+                    <label for="paymentProof" class="block mb-2 font-semibold text-gray-400">Payment Screenshot</label>
+                    <input type="file" id="paymentProof" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-700/30 file:text-green-500 hover:file:bg-green-700/50 transition-colors cursor-pointer">
                 </div>
             </div>
             
-            <button onclick="placeOrder()" class="w-full mt-8 bg-indigo-600 text-white p-4 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300 text-lg">Submit Order</button>
+            <button onclick="placeOrder()" class="w-full mt-8 bg-green-500 text-white p-4 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 text-lg">Submit Order</button>
         </div>
     </div>
     <div id="myOrdersModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4 modal">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
-            <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition-colors">&times;</button>
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-4xl relative">
+            <button onclick="closeModal('myOrdersModal')" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors">&times;</button>
             <h2 class="text-2xl font-bold mb-6">My Order History</h2>
             <div class="overflow-x-auto max-h-[60vh]">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-100 sticky top-0">
+                    <thead class="bg-gray-700 sticky top-0">
                         <tr>
                             <th class="p-3 font-semibold text-sm">Offer</th>
                             <th class="p-3 font-semibold text-sm">Price</th>
@@ -286,7 +287,7 @@
                             <th class="p-3 font-semibold text-sm">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="myOrdersBody" class="divide-y divide-slate-200"></tbody>
+                    <tbody id="myOrdersBody" class="divide-y divide-gray-700"></tbody>
                 </table>
             </div>
         </div>
@@ -397,14 +398,14 @@
         const categories = [...new Set(Object.values(offersData).map(o => o.category).filter(Boolean))];
         
         if (categories.length === 0) {
-            grid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-gamepad text-6xl text-slate-300 mb-4"></i><h3 class="text-xl font-semibold text-slate-600">No categories available right now</h3></div>`;
+            grid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-gamepad text-6xl text-gray-600 mb-4"></i><h3 class="text-xl font-semibold text-gray-400">No categories available right now</h3></div>`;
             return;
         }
 
         categories.forEach(c => {
             const card = document.createElement('div');
-            card.className = 'bg-white p-4 rounded-xl text-center cursor-pointer shadow-sm hover:bg-slate-100 transition-colors';
-            card.innerHTML = `<i class="fas fa-gamepad text-2xl text-slate-600 mb-2"></i><h4 class="font-semibold text-slate-800">${c}</h4>`;
+            card.className = 'bg-gray-700 p-4 rounded-xl text-center cursor-pointer shadow-sm hover:bg-gray-600 transition-colors';
+            card.innerHTML = `<i class="fas fa-gamepad text-2xl text-green-400 mb-2"></i><h4 class="font-semibold text-white">${c}</h4>`;
             card.onclick = () => showOffersForCategory(c);
             grid.appendChild(card);
         });
@@ -424,18 +425,18 @@
             if (o.category === category) {
                 hasOffers = true;
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col cursor-pointer';
+                card.className = 'bg-gray-700 rounded-lg shadow-sm border border-gray-600 overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col cursor-pointer';
                 card.onclick = () => showOrderModal(key);
                 card.innerHTML = `
                     <div class="p-3">
-                        <h3 class="text-md font-bold text-slate-800 leading-tight">${o.title}</h3>
-                        <p class="text-slate-500 text-xs mt-1 truncate">${o.description}</p>
-                        <div class="mt-2 pt-2 border-t border-slate-100 flex justify-between items-center">
+                        <h3 class="text-md font-bold text-white leading-tight">${o.title}</h3>
+                        <p class="text-gray-400 text-xs mt-1 truncate">${o.description}</p>
+                        <div class="mt-2 pt-2 border-t border-gray-600 flex justify-between items-center">
                             <div>
-                                ${o.originalPrice ? `<span class="text-xs text-slate-400 line-through">${o.originalPrice} BDT</span>` : ''}
-                                <span class="block text-md font-bold text-indigo-600">${o.price} BDT</span>
+                                ${o.originalPrice ? `<span class="text-xs text-gray-500 line-through">${o.originalPrice} BDT</span>` : ''}
+                                <span class="block text-md font-bold text-green-500">${o.price} BDT</span>
                             </div>
-                            <i class="fas fa-shopping-cart text-lg text-indigo-500"></i>
+                            <i class="fas fa-shopping-cart text-lg text-green-500"></i>
                         </div>
                     </div>
                 `;
@@ -444,7 +445,7 @@
         });
         
         if (!hasOffers) {
-            offersGrid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-search text-6xl text-slate-300 mb-4"></i><h3 class="text-xl font-semibold text-slate-600">No offers found for this category.</h3></div>`;
+            offersGrid.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-search text-6xl text-gray-600 mb-4"></i><h3 class="text-xl font-semibold text-gray-400">No offers found for this category.</h3></div>`;
         }
         
         openModal('offersModal');
@@ -505,7 +506,7 @@
             const orders = snap.val() || {};
             
             if (Object.keys(orders).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-slate-500"><i class="fas fa-shopping-cart text-4xl mb-3"></i><p>You haven't placed any orders yet.</p></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-gray-500"><i class="fas fa-shopping-cart text-4xl mb-3"></i><p>You haven't placed any orders yet.</p></td></tr>`;
                 return;
             }
             
@@ -515,8 +516,8 @@
                     completed: 'bg-green-100 text-green-800',
                     cancelled: 'bg-red-100 text-red-800'
                 };
-                const statusClass = statusClasses[o.status] || 'bg-slate-100 text-slate-800';
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} BDT</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
+                const statusClass = statusClasses[o.status] || 'bg-gray-100 text-gray-800';
+                tbody.innerHTML += `<tr class="hover:bg-gray-700"><td class="p-3">${o.offerId}</td><td class="p-3">${o.price} BDT</td><td class="p-3">${o.gameId}</td><td class="p-3"><span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td></tr>`;
             });
         });
     }
