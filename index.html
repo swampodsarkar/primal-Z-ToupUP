@@ -364,19 +364,19 @@
                         <div class="payment-option">
                             <input type="radio" id="bkash" name="payment-method" class="hidden" value="bKash" required>
                             <label for="bkash" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/E2136E/ffffff?text=bKash" alt="bKash" class="h-8 mb-2">
+                                <img src="https://www.logo.wine/a/logo/BKash/BKash-bKash-Logo.wine.svg" alt="bKash" class="h-8 mb-2">
                             </label>
                         </div>
                         <div class="payment-option">
                             <input type="radio" id="nagad" name="payment-method" class="hidden" value="Nagad">
                             <label for="nagad" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/F58220/ffffff?text=Nagad" alt="Nagad" class="h-8 mb-2">
+                                <img src="https://www.logo.wine/a/logo/Nagad/Nagad-Horizontal-Logo.wine.svg" alt="Nagad" class="h-8 mb-2">
                             </label>
                         </div>
                         <div class="payment-option">
                             <input type="radio" id="rocket" name="payment-method" class="hidden" value="Rocket">
                             <label for="rocket" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/8E297A/ffffff?text=Rocket" alt="Rocket" class="h-8 mb-2">
+                                <img src="https://media.licdn.com/dms/image/v2/C510BAQECvetZN5XgCg/company-logo_200_200/company-logo_200_200/0/1631356974692?e=2147483647&v=beta&t=ShkT3JzoQ2-yj7G6_VqJJcMzPxZXYK32-qqSVAZcc-c" alt="Rocket" class="h-8 mb-2">
                             </label>
                         </div>
                     </div>
@@ -421,19 +421,19 @@
                         <div class="payment-option">
                             <input type="radio" id="ip-bkash" name="ip-payment-method" class="hidden" value="bKash" required>
                             <label for="ip-bkash" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/E2136E/ffffff?text=bKash" alt="bKash" class="h-8 mb-2">
+                                <img src="https://www.logo.wine/a/logo/BKash/BKash-bKash-Logo.wine.svg" alt="bKash" class="h-8 mb-2">
                             </label>
                         </div>
                         <div class="payment-option">
                             <input type="radio" id="ip-nagad" name="ip-payment-method" class="hidden" value="Nagad">
                             <label for="ip-nagad" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/F58220/ffffff?text=Nagad" alt="Nagad" class="h-8 mb-2">
+                                <img src="https://www.logo.wine/a/logo/Nagad/Nagad-Horizontal-Logo.wine.svg" alt="Nagad" class="h-8 mb-2">
                             </label>
                         </div>
                         <div class="payment-option">
                             <input type="radio" id="ip-rocket" name="ip-payment-method" class="hidden" value="Rocket">
                             <label for="ip-rocket" class="flex flex-col items-center justify-center p-3 border-2 border-gray-600 rounded-lg cursor-pointer transition-all">
-                                <img src="https://placehold.co/80x40/8E297A/ffffff?text=Rocket" alt="Rocket" class="h-8 mb-2">
+                                <img src="https://media.licdn.com/dms/image/v2/C510BAQECvetZN5XgCg/company-logo_200_200/company-logo_200_200/0/1631356974692?e=2147483647&v=beta&t=ShkT3JzoQ2-yj7G6_VqJJcMzPxZXYK32-qqSVAZcc-c" alt="Rocket" class="h-8 mb-2">
                             </label>
                         </div>
                     </div>
@@ -1135,6 +1135,7 @@
                     showMainView();
                 });
                 fetchUserData(user); 
+                showMainView(); // Show main view by default for logged in user
             } else {
                 authContainer.innerHTML = `<button id="login-button" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-emerald-500 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -1143,9 +1144,7 @@
                 balanceDisplay.innerHTML = '<span>৳</span> 0';
                 
                 // Show main content by default if not logged in
-                hideAllViews();
-                mainContent.classList.remove('hidden');
-                loadProductCards();
+                showMainView();
             }
         });
 
